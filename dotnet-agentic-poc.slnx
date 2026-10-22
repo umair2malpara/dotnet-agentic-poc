@@ -1,3 +1,6 @@
 <Solution>
+  <Folder Name="/.github/">
+    <File Path="copilot-instructions.md" />
+  </Folder>
   <Project Path="DotnetAgenticPoc.Api/DotnetAgenticPoc.Api.csproj" />
 </Solution>

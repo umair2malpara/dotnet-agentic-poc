@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DotnetAgenticPoc.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff9a810cbe842d1444066147538bffb9cb707995")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+27c75cc13b084b61d5dfae13ab29fb0c24fc15d0")]
 [assembly: System.Reflection.AssemblyProductAttribute("DotnetAgenticPoc.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DotnetAgenticPoc.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
