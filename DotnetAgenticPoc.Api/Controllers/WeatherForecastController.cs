@@ -1,26 +1,23 @@
+using DotnetAgenticPoc.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DotnetAgenticPoc.Api.Controllers
-{
-    [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
-    {
-        private static readonly string[] Summaries =
-        [
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        ];
+namespace DotnetAgenticPoc.Api.Controllers;
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
+[ApiController]
+[Route("api/[controller]")]
+public sealed class WeatherForecastController(
+    IWeatherForecastService weatherForecastService)
+    : ControllerBase
+{
+    [HttpGet(Name = "GetWeatherForecast")]
+    public async Task<ActionResult<IReadOnlyCollection<WeatherForecast>>> Get(
+        [FromQuery] int count = 5,
+        CancellationToken cancellationToken = default)
+    {
+        var forecasts = await weatherForecastService.GetAsync(
+            count,
+            cancellationToken);
+
+        return Ok(forecasts);
     }
 }
