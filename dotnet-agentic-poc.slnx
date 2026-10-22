@@ -2,5 +2,13 @@
   <Folder Name="/.github/">
     <File Path="copilot-instructions.md" />
   </Folder>
+  <Folder Name="/.github/prompts/">
+    <File Path="analyze.md" />
+    <File Path="apply.md" />
+    <File Path="approach.md" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path="build.yml" />
+  </Folder>
   <Project Path="DotnetAgenticPoc.Api/DotnetAgenticPoc.Api.csproj" />
 </Solution>
