@@ -1,0 +1,12 @@
+Apply Issue #[IssueId] using Approach #[ApproachNumber].
+
+Tasks:
+
+1. Create implementation plan.
+2. Create new branch name.
+3. Show me all files that will change.
+4. Generate code changes.
+5. Generate unit tests.
+6. Generate commit message.
+7. Generate PR title.
+8. Generate PR description.
