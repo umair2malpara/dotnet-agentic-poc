@@ -1,3 +1,4 @@
+using DotnetAgenticPoc.Api.Middleware;
 using DotnetAgenticPoc.Api.Repositories;
 using DotnetAgenticPoc.Api.Services;
 
@@ -8,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+builder.Logging.AddSimpleConsole(options =>
+{
+    options.IncludeScopes = true;
+});
+
 builder.Services.AddSingleton<ICustomerRepository, InMemoryCustomerRepository>();
 builder.Services.AddSingleton<IProductRepository, InMemoryProductRepository>();
 builder.Services.AddSingleton<IWeatherForecastRepository, WeatherForecastRepository>();
@@ -17,6 +23,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

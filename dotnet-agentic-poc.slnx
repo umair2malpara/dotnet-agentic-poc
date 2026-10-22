@@ -11,4 +11,5 @@
     <File Path="build.yml" />
   </Folder>
   <Project Path="DotnetAgenticPoc.Api/DotnetAgenticPoc.Api.csproj" />
+  <Project Path="DotnetAgenticPoc.Api.Tests/DotnetAgenticPoc.Api.Tests.csproj" />
 </Solution>
