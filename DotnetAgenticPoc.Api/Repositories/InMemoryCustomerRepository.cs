@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using DotnetAgenticPoc.Api.Contracts;
 using DotnetAgenticPoc.Api.Models;
 
 namespace DotnetAgenticPoc.Api.Repositories;
@@ -7,12 +8,32 @@ public sealed class InMemoryCustomerRepository : ICustomerRepository
 {
     private readonly ConcurrentDictionary<Guid, Customer> customers = new();
 
-    public Task<IReadOnlyCollection<Customer>> GetAllAsync(
+    public Task<PagedCustomersResult> GetPagedAsync(
+        int page,
+        int pageSize,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        IReadOnlyCollection<Customer> result = customers.Values.ToList();
+        var orderedCustomers = customers.Values
+            .OrderBy(customer => customer.Name)
+            .ThenBy(customer => customer.Id)
+            .ToArray();
+
+        var skippedRecords = (page - 1) * pageSize;
+        var pageItems = orderedCustomers
+            .Skip(skippedRecords)
+            .Take(pageSize)
+            .ToArray();
+
+        var result = new PagedCustomersResult
+        {
+            Items = pageItems,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = orderedCustomers.Length
+        };
+
         return Task.FromResult(result);
     }
 

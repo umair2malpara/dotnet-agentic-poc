@@ -1,3 +1,4 @@
+using DotnetAgenticPoc.Api.Contracts;
 using DotnetAgenticPoc.Api.Models;
 using DotnetAgenticPoc.Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,35 @@ public sealed class CustomersController(
     ICustomerService customerService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyCollection<Customer>>> GetAll(
+    public async Task<ActionResult<PagedCustomersResult>> GetAll(
+        [FromQuery] CustomersPageQuery query,
         CancellationToken cancellationToken)
     {
-        var customers = await customerService.GetAllAsync(cancellationToken);
+        if (query.Page <= 0)
+        {
+            return BadRequest("Page must be greater than 0.");
+        }
+
+        if (query.PageSize <= 0 || query.PageSize > 100)
+        {
+            return BadRequest("PageSize must be between 1 and 100.");
+        }
+
+        var customers = await customerService.GetPagedAsync(
+            query.Page,
+            query.PageSize,
+            cancellationToken);
+
+        var isOutOfRange = customers.TotalCount == 0
+            ? query.Page > 1
+            : (query.Page - 1) * query.PageSize >= customers.TotalCount;
+
+        if (isOutOfRange)
+        {
+            return BadRequest(
+                "Requested page is out of range. Please provide a valid page number.");
+        }
+
         return Ok(customers);
     }
 

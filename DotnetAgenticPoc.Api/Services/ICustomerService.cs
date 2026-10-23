@@ -1,10 +1,14 @@
+using DotnetAgenticPoc.Api.Contracts;
 using DotnetAgenticPoc.Api.Models;
 
 namespace DotnetAgenticPoc.Api.Services;
 
 public interface ICustomerService
 {
-    Task<IReadOnlyCollection<Customer>> GetAllAsync(CancellationToken cancellationToken);
+    Task<PagedCustomersResult> GetPagedAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken);
 
     Task<Customer?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 

@@ -1,3 +1,4 @@
+using DotnetAgenticPoc.Api.Contracts;
 using DotnetAgenticPoc.Api.Models;
 using DotnetAgenticPoc.Api.Repositories;
 
@@ -6,9 +7,14 @@ namespace DotnetAgenticPoc.Api.Services;
 public sealed class CustomerService(
     ICustomerRepository customerRepository) : ICustomerService
 {
-    public Task<IReadOnlyCollection<Customer>> GetAllAsync(
+    public Task<PagedCustomersResult> GetPagedAsync(
+        int page,
+        int pageSize,
         CancellationToken cancellationToken) =>
-        customerRepository.GetAllAsync(cancellationToken);
+        customerRepository.GetPagedAsync(
+            page,
+            pageSize,
+            cancellationToken);
 
     public Task<Customer?> GetByIdAsync(
         Guid id,
