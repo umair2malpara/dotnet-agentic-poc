@@ -83,3 +83,60 @@ Every pull request should include:
 - Do not claim tests passed unless they were actually executed successfully.
 - Update documentation when behavior or configuration changes.
 - Ask for clarification when requirements are ambiguous or could introduce security risks.
+
+## Development Workflow Standards
+
+For every GitHub Issue:
+
+1. Understand the requirement before coding.
+2. Clarify ambiguities before implementation.
+3. Produce a functional and technical specification before development begins.
+4. Create a dedicated feature branch.
+5. Never perform development on main.
+6. Keep changes focused on the scope of the issue.
+7. Build the solution after implementation.
+8. Run unit tests after implementation.
+9. Ensure the solution is in a deployable state.
+10. Create meaningful commit messages.
+11. Create meaningful Pull Requests.
+12. Update documentation when applicable.
+
+No implementation should begin until requirements and specifications are approved.
+
+## Git Standards
+
+Branch Naming Convention
+
+feature/issue-{IssueId}-{short-description}
+
+Examples:
+
+feature/issue-15-customer-pagination
+feature/issue-28-product-search
+
+Commit Message Convention
+
+Issue #{IssueId} - <Summary>
+
+Examples:
+
+Issue #15 - Add customer pagination
+
+Issue #28 - Add product search endpoint
+
+Never commit directly to main.
+Always use feature branches.
+
+## AI Agent Responsibilities
+
+AI Agents should:
+
+- Read issue requirements first.
+- Read impacted source code before proposing changes.
+- Present assumptions.
+- Surface risks early.
+- Explain technical decisions.
+- Avoid hidden assumptions.
+- Record decisions into specification documents.
+- Follow approved specifications during implementation.
+- Verify build success before considering work complete.

@@ -1,4 +1,4 @@
-For GitHub Issue #2
+For GitHub Issue #[IssueId]
 
 Provide multiple implementation approaches.
 

@@ -1,4 +1,4 @@
-Analyze GitHub Issue #2.
+Analyze GitHub Issue #[IssueId].
 
 Read the entire repository.
 

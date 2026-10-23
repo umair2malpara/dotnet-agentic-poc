@@ -1,15 +1,18 @@
 <Solution>
   <Folder Name="/.github/">
-    <File Path="copilot-instructions.md" />
+    <File Path=".github/copilot-instructions.md" />
   </Folder>
-  <Folder Name="/.github/prompts/">
-    <File Path="analyze.md" />
-    <File Path="apply.md" />
-    <File Path="approach.md" />
+  <Folder Name="/.github/agents/">
+    <File Path=".github/agents/commit.md" />
+    <File Path=".github/agents/develop.md" />
+    <File Path=".github/agents/grill.md" />
+    <File Path=".github/agents/pr.md" />
+    <File Path=".github/agents/setup.md" />
+    <File Path=".github/agents/spec.md" />
   </Folder>
   <Folder Name="/.github/workflows/">
     <File Path="build.yml" />
   </Folder>
-  <Project Path="DotnetAgenticPoc.Api/DotnetAgenticPoc.Api.csproj" />
   <Project Path="DotnetAgenticPoc.Api.Tests/DotnetAgenticPoc.Api.Tests.csproj" />
+  <Project Path="DotnetAgenticPoc.Api/DotnetAgenticPoc.Api.csproj" />
 </Solution>
