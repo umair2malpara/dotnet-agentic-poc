@@ -6,6 +6,7 @@
     <File Path=".github/prompts/commit.prompt.md" />
     <File Path=".github/prompts/develop.prompt.md" />
     <File Path=".github/prompts/grill.prompt.md" />
+    <File Path=".github/prompts/grill_jira.prompt.md" />
     <File Path=".github/prompts/pr.prompt.md" />
     <File Path=".github/prompts/setup.prompt.md" />
     <File Path=".github/prompts/spec.prompt.md" />
