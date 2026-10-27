@@ -7,11 +7,30 @@
     <File Path=".github/prompts/develop.prompt.md" />
     <File Path=".github/prompts/grill.prompt.md" />
     <File Path=".github/prompts/pr.prompt.md" />
+    <File Path=".github/prompts/review.prompt.md" />
     <File Path=".github/prompts/setup.prompt.md" />
     <File Path=".github/prompts/spec.prompt.md" />
   </Folder>
   <Folder Name="/.github/workflows/">
-    <File Path="build.yml" />
+    <File Path=".github/workflows/build.yml" />
+  </Folder>
+  <Folder Name="/docs/" />
+  <Folder Name="/docs/architecture/">
+    <File Path="agentic-workflow.md" />
+    <File Path="backend-architecture.md" />
+    <File Path="frontend-architecture.md" />
+  </Folder>
+  <Folder Name="/docs/decisions/">
+    <File Path="ADR-001-agentic-workflow.md" />
+    <File Path="ADR-002-jira-mcp.md" />
+    <File Path="ADR-003-angular-frontend.md" />
+  </Folder>
+  <Folder Name="/specifications/" />
+  <Folder Name="/specifications/sample/">
+    <File Path="bdd-tests.md" />
+    <File Path="functional-spec.md" />
+    <File Path="technical-spec.md" />
+    <File Path="traceability-matrix.md" />
   </Folder>
   <Project Path="DotnetAgenticPoc.Api.Tests/DotnetAgenticPoc.Api.Tests.csproj" />
   <Project Path="DotnetAgenticPoc.Api/DotnetAgenticPoc.Api.csproj" />
