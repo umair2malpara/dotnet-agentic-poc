@@ -1,73 +1,197 @@
 # Issue #6 Functional Specification
 
-**Status:** Approved; updated to reflect implementation  
-**Issue:** [Create Angular Frontend Application with Dashboard, Navbar, and API Integration](https://github.com/umair2malpara/dotnet-agentic-poc/issues/6)
+**Work item:** [#6 — Enhance the Angular Dashboard with Customer and Product Navigation](https://github.com/umair2malpara/dotnet-agentic-poc/issues/6)
+**Source:** GitHub Issue
+**Type:** Enhancement
+**Priority:** Not specified by the issue; all issue acceptance criteria are treated as required
+**Reporter:** umair2malpara
+**Assignee:** umair2malpara
+**Discovery:** Complete; shared understanding confirmed
+**Specification status:** Approved by the user for the #setup handoff
 
 ## Business Objective
 
-Provide a responsive browser-based dashboard for viewing weather forecasts, customers, and products from the existing .NET API.
+Enhance the existing Angular dashboard so users can navigate directly between Dashboard, Customers, and Products, understand their current location, and view dashboard datasets independently even when one request is loading or has failed. The issue's acceptance criteria define success; no additional business KPI is specified.
 
 ## Problem Statement
 
-The repository currently provides an ASP.NET Core API but no browser UI. Users need a single place to inspect the data exposed by the API, with clear navigation and feedback when data is loading, unavailable, or empty.
+The existing application already retrieves and displays dashboard data but has only a Dashboard route and fragment-based links to dashboard sections. It does not provide the requested Customer and Product routes, route-aware breadcrumbs, or a sidebar limited to those two feature links.
 
 ## Functional Requirements
 
-1. Add a new Angular application in a dedicated `src/frontend/` directory. Use the latest stable Angular version available when implementation begins and Angular Material.
-2. Provide a top bar with a text wordmark, “Dotnet Agentic POC,” and a left-side navigation bar.
-3. Deliver the frontend as a single-page application (SPA) with Angular client-side routing. The root URL (`/`) redirects to the dashboard route (`/dashboard`); unknown paths also redirect to the dashboard.
-4. Keep the initial experience on one dashboard route. Navigation links use client-side routing and route fragments to take users to the dashboard overview, weather, customer, and product sections without a full-page reload.
-5. Fetch and display the following data from the configured API:
-   - Weather forecasts from `GET /api/weatherforecast?count=5`.
-   - Customers from `GET /api/customers`.
-   - Products from `GET /api/products`.
-6. Display the weather data returned by the existing API. Its generated forecast values are sample data, not live location-based weather.
-7. Display customers and products as read-only dashboard content. Do not add create, edit, or delete UI.
-8. Make the API base URL configurable through Angular environment configuration; do not require a source-code edit to change the API host.
-9. Show a loading state while each dataset is being requested, a visible error state with a retry action when a request fails, and a distinct empty state when the API successfully returns no records.
-10. Seed three fictional customers and three sample products in the existing in-memory API repositories. Seed data is for demonstration and resets when the API process restarts.
-11. Configure the API to permit the Angular development origin (`http://localhost:4200`) in Development. Origins for other environments must be provided through configuration.
-12. Support desktop and mobile viewport layouts, including usable navigation and dashboard content on small screens.
-13. Build the dashboard from focused, reusable UI components for weather, customer list, product list, summary cards, and dataset loading/error/retry status. The dashboard feature coordinates API requests and passes typed state to the presentation components.
+### FR-001 — SPA routes and redirects
 
-## Acceptance Criteria
+**Priority:** Must
 
-- An Angular project exists in `src/frontend/`, builds, and runs locally.
-- Navigating to `/` or an unknown path resolves to `/dashboard`; directly loading `/dashboard` renders the dashboard.
-- Client-side dashboard navigation updates the route fragment and scrolls to its section without a full-page reload.
-- The root application template is a minimal router outlet, and the dashboard route renders the reusable dashboard feature and data components.
-- The dashboard renders a styled left navigation bar and top bar with the “Dotnet Agentic POC” wordmark.
-- Selecting each navigation item moves to the corresponding section on the dashboard.
-- The dashboard requests all three datasets from the API base URL configured for the environment and renders the returned fields.
-- The weather section presents the forecast date, summary, and temperature; the customer section presents names and emails; the product section presents names and prices.
-- On a fresh API start, the customer and product endpoints each return three fictional sample records; restarting the API resets these in-memory records.
-- The API permits requests from `http://localhost:4200` in Development and uses configured origins outside Development.
-- Each section independently communicates loading, successful empty results, and request errors; the user can retry a failed request.
-- The page remains usable at desktop and mobile viewport sizes.
+The application shall redirect `/` and unknown paths to `/dashboard`, render the Dashboard, Customers, and Products pages at `/dashboard`, `/customers`, and `/products`, respectively, and support direct navigation to each route without a full-page reload. Feature routes shall be lazy-loaded where appropriate. The root application template shall contain only the router outlet.
 
-## Out Of Scope
+**Acceptance criteria**
 
-- Customer or product create, edit, or delete operations in the UI.
-- Separate routed pages for weather, customers, or products.
-- Live weather providers, geolocation, or user-selectable locations.
-- Persistent storage or durable demo data.
-- Authentication, authorization, or role-based dashboard behavior.
-- Production hosting, reverse-proxy setup, and selection of production origins.
-- Changes to existing API resource contracts.
+- Opening `/` or an unknown path resolves to `/dashboard`.
+- Opening each supported route directly renders its corresponding page.
+- In-app route changes do not cause full-page reloads.
+
+### FR-002 — Application wordmark
+
+**Priority:** Must
+
+The responsive top bar shall display the **Dotnet Agentic POC** wordmark as a client-side navigation link to `/dashboard`.
+
+**Acceptance criteria**
+
+- The wordmark is present on Dashboard, Customers, and Products.
+- Activating it navigates to `/dashboard` without a full-page reload.
+
+### FR-003 — Feature navigation
+
+**Priority:** Must
+
+The left navigation shall contain exactly two feature links: **Customers** and **Products**. It shall not contain Dashboard, Weather, or Overview links. On small screens, the links shall be available through an accessible compact menu or drawer.
+
+**Acceptance criteria**
+
+- The desktop left navigation contains only Customers and Products.
+- Each link navigates to its corresponding route.
+- At small viewports, an accessible menu/drawer exposes the same two links.
+
+### FR-004 — Route-aware breadcrumbs
+
+**Priority:** Must
+
+Each supported route shall display its corresponding breadcrumb: `Home / Dashboard`, `Home / Customers`, or `Home / Products`. The Home item shall link to `/dashboard`.
+
+**Acceptance criteria**
+
+- The breadcrumb matches the active route.
+- Home navigates to Dashboard without a full-page reload.
+
+### FR-005 — Customer and Product placeholder pages
+
+**Priority:** Must
+
+The Customers page shall display a Customers heading and **Customer management is under development.** The Products page shall display a Products heading and **Product management is under development.** These pages establish future route destinations only; they shall not provide CRUD workflows.
+
+**Acceptance criteria**
+
+- Each route displays its corresponding heading and exact placeholder message.
+- Neither page provides create, edit, or delete controls or workflows.
+
+### FR-006 — Dashboard data and presentation
+
+**Priority:** Must
+
+The Dashboard shall continue to display forecast, customer, and product data returned by the existing API. It shall request `GET /api/weatherforecast?count=5`, `GET /api/customers`, and `GET /api/products` using the configured API base URL. Weather values shall be clearly identified as generated sample data, not live or location-specific forecasts.
+
+**Acceptance criteria**
+
+- Dashboard shows the returned forecast date, summary, and temperatures, customer names and emails, and product names and prices.
+- Weather is identified as generated sample data.
+- Summary/stat cards and focused reusable standalone presentation components remain in use.
+- Presentation components receive typed data/state and remain independent of the API service.
+
+### FR-007 — Independent dataset states and retry
+
+**Priority:** Must
+
+Weather, customer, and product datasets shall each display independent loading, error-with-retry, successful-empty, and successful-data states. A retry shall request only the failed dataset. A failure in one dataset shall not prevent the others from loading or displaying.
+
+**Acceptance criteria**
+
+- A pending request displays that dataset's loading state.
+- A successful empty collection displays a clear empty state, not an error.
+- A failed request displays a user-facing error and retry control, not an empty state.
+- Retrying a failed dataset does not reload or suppress successful datasets.
+
+### FR-008 — Existing sample data and CORS behavior
+
+**Priority:** Must
+
+The API shall provide three fictional customer records and three sample product records from in-memory repositories; the records reset when the API restarts. Development CORS shall allow `http://localhost:4200`. Other environments shall require explicitly configured allowed origins and shall not use wildcard origins.
+
+**Acceptance criteria**
+
+- A fresh API process exposes three sample customers and three sample products.
+- The Development API allows the Angular development origin.
+- Outside Development, an explicit origin configuration is required and wildcard origins are not accepted.
+
+### FR-009 — Accessibility, responsiveness, and documentation
+
+**Priority:** Must
+
+The UI shall target WCAG 2.1 AA, including navigation, breadcrumbs, the responsive menu/drawer, and announcements of dashboard state. The application shall remain usable on desktop and small screens. Documentation shall describe running the API and frontend together and configuring the API base URL and CORS origins.
+
+**Acceptance criteria**
+
+- Navigation and page content remain usable at supported narrow and desktop viewports.
+- Interactive elements are keyboard-operable, have accessible names and visible focus, and communicate the active route.
+- Breadcrumbs have accessible semantics; loading and error states are announced appropriately.
+- Documentation includes the local API/frontend run instructions and API URL/CORS configuration.
+
+## User Journeys
+
+### Normal flow
+
+1. A user opens the application at `/` and arrives at Dashboard.
+2. The user views weather, customers, and products as their requests complete.
+3. The user navigates to Customers or Products through the feature navigation and sees the corresponding placeholder page.
+4. The user returns to Dashboard through the wordmark or Home breadcrumb.
+
+### Alternative flow
+
+- A user opens `/dashboard`, `/customers`, or `/products` directly.
+- On a small screen, a user opens the accessible menu/drawer and selects Customers or Products.
+- A successful API response contains an empty collection; the corresponding section displays its empty state.
+
+### Exception flow
+
+- One dataset request fails; its section displays an error and retry action while the other sections continue independently.
+- A user opens an unknown path; the application redirects to Dashboard.
+- A non-Development API starts without explicit allowed origins or with an invalid/wildcard origin; startup/configuration must fail rather than broaden access.
+
+## Non-Functional Requirements
+
+- **Performance:** No numeric latency, throughput, or capacity target is specified. Keep requests independent and avoid delaying unrelated sections.
+- **Security:** Do not introduce credentials, authentication, authorization, wildcard CORS, or trusted rendering of API strings.
+- **Availability:** Local application data display depends on the API being available; failures must remain visible and retryable.
+- **Maintainability:** Preserve the existing standalone Angular and API patterns; keep routing/shell responsibilities separate from dashboard data presentation.
+- **Monitoring and logging:** No new logging or telemetry requirement is introduced. Do not expose stack traces, internal host details, or sensitive configuration in UI errors.
+- **Scalability:** No additional scale target is specified.
+- **Accessibility:** Target WCAG 2.1 AA for the UI, including responsive navigation, breadcrumbs, state announcements, keyboard use, focus visibility, and sufficient contrast.
+
+## Constraints
+
+- **Technical:** Implement in `src/frontend/`; use existing Angular and Angular Material versions/patterns. Verify the configured Angular version when implementation begins and upgrade only if required. Keep the root template to a router outlet and preserve existing API contracts.
+- **Business:** The issue's acceptance criteria define success; do not add customer/product management workflows.
+- **Operational:** The API and frontend are run separately for local development. CORS origins outside Development are explicit environment configuration.
 
 ## Assumptions
 
-- The existing API is the system of record for the displayed data.
-- The API is run separately from the Angular development server.
-- Angular Material is the selected component library.
-- A text wordmark is sufficient; no logo asset is currently provided.
-- The existing forecast endpoint’s default count of five is appropriate for the dashboard.
-- The CORS Development allowlist may include the known Angular CLI origin; other origins are deployment configuration.
-- Seeded data is deterministic fictional demonstration data and is not intended to represent real people or products.
+- Dashboard users are the intended audience; no other stakeholder roles were identified.
+- Existing API response models and endpoints remain the source of truth.
+- The issue's specified seed data is fictional demonstration data.
+- The current API base URL environment configuration is appropriate for local development and remains configurable per build environment.
 
 ## Risks
 
-- No production API or frontend origin has been supplied, so deployment CORS configuration must be completed by the deployment owner.
-- The API repositories are in-memory. Customer/product mutations made through existing API routes and all seeded data disappear on API restart.
-- The weather endpoint generates sample values, which must not be presented as a live or location-specific forecast.
-- The customer and product API responses are empty before seeding; dashboard empty states remain necessary for later deletions or alternative API instances.
+- API availability, local HTTPS certificate trust, or CORS misconfiguration can prevent data retrieval; independent visible error states are required.
+- The responsive menu, active route indication, breadcrumb navigation, and state announcements must meet the agreed accessibility target.
+- Generated weather data may be misunderstood as live unless the sample-data label remains clear.
+
+## Out Of Scope
+
+- Customer or product CRUD operations and forms.
+- Live weather-provider integration or geolocation.
+- Persistent storage for sample records.
+- Authentication and authorization.
+- Production hosting or deployment-specific origin selection.
+- Changes to existing API resource contracts.
+
+## Dependencies
+
+- The configured API base URL and existing weather, customer, and product API endpoints.
+- The API Development CORS allowlist and explicit non-Development allowed-origin configuration.
+- Browser support for the Angular application and, locally, trust of the API HTTPS certificate if HTTPS is used.
+
+## Open Items
+
+None; the specification package is approved by the user for handoff to `#setup`.

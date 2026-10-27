@@ -19,7 +19,7 @@
         (retry)="retry.emit()"
       />
     } @else if (current.data.length === 0) {
-      <div class="state-card">No forecast data is available right now.</div>
+      <div class="state-card" role="status">No forecast data is available right now.</div>
     } @else {
       <div class="weather-grid">
         @for (forecast of current.data; track forecast.date) {

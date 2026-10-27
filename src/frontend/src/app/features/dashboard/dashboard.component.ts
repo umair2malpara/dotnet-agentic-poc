@@ -1,14 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import {
-  Customer,
-  DatasetState,
-  Product,
-  WeatherForecast,
-} from '../../api.models';
+import { Customer, DatasetState, Product, WeatherForecast } from '../../api.models';
 import {
   CustomerListComponent,
   DashboardStatCardComponent,
@@ -23,9 +16,7 @@ import { DashboardApiService } from '../../dashboard-api.service';
     CustomerListComponent,
     DashboardStatCardComponent,
     MatIconModule,
-    MatToolbarModule,
     ProductListComponent,
-    RouterLink,
     WeatherForecastComponent,
   ],
   styleUrl: './dashboard.component.scss',
