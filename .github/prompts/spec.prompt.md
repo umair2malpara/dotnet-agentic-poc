@@ -188,19 +188,30 @@ Generate the following documents.
 
 ### Functional Specification
 
-/specifications/{WorkItem}-functional-spec.md
+/specifications/{WorkItem}/functional-spec.md
 
 ### Technical Specification
 
-/specifications/{WorkItem}-technical-spec.md
+/specifications/{WorkItem}/technical-spec.md
 
 ### BDD Test Specification
 
-/specifications/{WorkItem}-bdd-tests.md
+/specifications/{WorkItem}/bdd-tests.md
 
 ### Traceability Matrix
 
-/specifications/{WorkItem}-traceability-matrix.md
+/specifications/{WorkItem}/traceability-matrix.md
+
+Example:
+
+specifications/
+
+└── POC-123/
+    ├── discovery-summary.md
+    ├── functional-spec.md
+    ├── technical-spec.md
+    ├── bdd-tests.md
+    └── traceability-matrix.md
 
 ---
 
