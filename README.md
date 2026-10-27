@@ -18,7 +18,7 @@ dotnet-agentic-poc.slnx  Backend solution
 
 The Angular dashboard is in [`src/frontend/`](./src/frontend/). It reads weather, customer, and product data from the API. Customer and product records are fictional in-memory samples and reset when the API restarts.
 
-The frontend is a single-page application: `/` redirects to `/dashboard`, which is the default dashboard route. Dashboard navigation updates the route fragment to scroll to each data section without a full-page reload.
+The frontend is a single-page application: `/` and unknown paths redirect to `/dashboard`. The **Dotnet Agentic POC** wordmark returns to the dashboard, and the responsive feature navigation links to `/customers` and `/products`. These routes are available directly and use client-side navigation. Each page has a route-aware breadcrumb; Customer and Product pages are placeholders for future management features.
 
 ## Run locally
 

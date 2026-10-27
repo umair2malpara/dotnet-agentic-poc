@@ -21,7 +21,7 @@
         (retry)="retry.emit()"
       />
     } @else if (current.data.length === 0) {
-      <div class="state-card compact-state">No products found.</div>
+      <div class="state-card compact-state" role="status">No products found.</div>
     } @else {
       <div class="record-list">
         @for (product of current.data; track product.id) {

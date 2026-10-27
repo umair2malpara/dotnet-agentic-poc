@@ -1,159 +1,230 @@
 # Issue #6 BDD Test Specification
 
-**Status:** Approved; updated to reflect implementation  
-**Issue:** [Create Angular Frontend Application with Dashboard, Navbar, and API Integration](https://github.com/umair2malpara/dotnet-agentic-poc/issues/6)
+**Work item:** [#6 — Enhance the Angular Dashboard with Customer and Product Navigation](https://github.com/umair2malpara/dotnet-agentic-poc/issues/6)
+**Discovery:** Complete; shared understanding confirmed
+**Specification status:** Approved by the user for the #setup handoff
 
-These scenarios define expected behavior for implementation and review. Frontend component/service tests should use controlled HTTP responses; API tests should verify the repository and CORS behavior without relying on external services.
+Scenarios define observable behavior. Frontend tests shall use the repository's configured Angular/Vitest runner and controlled API responses. API seed and CORS behavior shall be validated without external services.
 
-## Success Cases
+## Success Scenarios
 
-### Scenario: Redirect the application root to the dashboard
+### BDD-001 — Redirect the root URL
 
-**Given** the Angular single-page application is loaded at `/`  
-**When** the router resolves the initial URL  
-**Then** the browser URL becomes `/dashboard`  
-**And** the dashboard is rendered inside the root router outlet  
-**And** the transition does not cause a full-page reload
+**Given** the SPA is loaded at `/`
+**When** the router resolves the initial URL
+**Then** the URL becomes `/dashboard`
+**And** the Dashboard page is rendered inside the router outlet
+**And** no full-page navigation occurs
 
-### Scenario: Render the dashboard from a direct route
+### BDD-002 — Redirect unknown paths
 
-**Given** the application is opened directly at `/dashboard`  
-**When** Angular resolves the route  
-**Then** the dashboard shell and its reusable dashboard components are rendered
+**Given** the SPA is loaded at an unknown path
+**When** the router resolves the URL
+**Then** it redirects to `/dashboard`
+**And** Dashboard is rendered
 
-### Scenario: Redirect an unknown route
+### BDD-003 — Open each route directly
 
-**Given** the application is opened at an unrecognized path  
-**When** Angular resolves the route  
-**Then** the router redirects to `/dashboard`  
-**And** the dashboard is displayed
+**Given** a user opens `/dashboard`, `/customers`, or `/products` directly
+**When** the SPA initializes
+**Then** the matching page is rendered
+**And** the shared application shell is present
+**And** navigation does not require a full-page reload
 
-### Scenario: Render the dashboard shell
+### BDD-004 — Display the wordmark and return to Dashboard
 
-**Given** the Angular application has started successfully  
-**When** the dashboard page is displayed  
-**Then** the top bar shows the “Dotnet Agentic POC” wordmark  
-**And** the left navigation contains links to weather, customers, and products  
-**And** each link uses client-side routing to target its corresponding section on the dashboard  
-**And** selecting a section link updates the route fragment and scrolls to that section without reloading the page
+**Given** the user is on Customers or Products
+**When** the user activates the **Dotnet Agentic POC** wordmark
+**Then** the client-side route changes to `/dashboard`
+**And** the Dashboard page is rendered without a full-page reload
 
-### Scenario: Compose the dashboard from reusable components
+### BDD-005 — Restrict feature navigation to Customers and Products
 
-**Given** the `/dashboard` route is active  
-**When** the dashboard is rendered  
-**Then** the page composes reusable weather, customer-list, product-list, and summary-card components  
-**And** loading and request errors use the shared dataset-status component  
-**And** the root application template contains only the router outlet
+**Given** the application shell is displayed on desktop
+**When** the feature navigation is inspected
+**Then** it contains exactly the Customers and Products links
+**And** it contains no Dashboard, Weather, or Overview link
+**And** each link navigates to its corresponding route
 
-### Scenario: Render shared dataset status consistently
+### BDD-006 — Navigate using the compact menu on a small viewport
 
-**Given** a dashboard dataset is loading or has failed  
-**When** its presentation component renders the state  
-**Then** the shared dataset-status component displays the appropriate loading message or error  
-**And** when the dataset has failed, it displays a retry action  
-**And** selecting retry emits an event to the dashboard feature to reload only that dataset
+**Given** the application is displayed at a small viewport
+**When** the user opens the accessible navigation menu/drawer
+**Then** Customers and Products links are available
+**And** the menu can be operated using the keyboard
+**And** selecting a link navigates to that route and communicates the active route
 
-### Scenario: Load and display all three datasets
+### BDD-007 — Display route-specific breadcrumbs
 
-**Given** the API returns forecast, customer, and product collections successfully  
-**When** the dashboard requests its data  
-**Then** it requests `GET /api/weatherforecast?count=5`, `GET /api/customers`, and `GET /api/products` using the configured API base URL  
-**And** it displays forecast date, summary, and temperature  
-**And** it displays customer name and email  
-**And** it displays product name and price
+**Given** Dashboard, Customers, or Products is active
+**When** the route's breadcrumb is rendered
+**Then** it displays respectively `Home / Dashboard`, `Home / Customers`, or `Home / Products`
+**And** Home is a link to `/dashboard`
 
-### Scenario: Show the initial customer and product sample data
+### BDD-008 — Display the Customers placeholder
 
-**Given** a fresh API process has started  
-**When** a client requests `GET /api/customers` and `GET /api/products`  
-**Then** each endpoint returns three fictional sample records  
-**And** the response fields match the existing customer and product contracts
+**Given** the `/customers` route is active
+**When** the page is rendered
+**Then** it displays a Customers heading
+**And** it displays **Customer management is under development.**
+**And** it provides no CRUD workflow
 
-### Scenario: Reset sample data after API restart
+### BDD-009 — Display the Products placeholder
 
-**Given** the API has been restarted  
-**When** a client requests the customer and product collections  
-**Then** the three startup sample records are available again  
-**And** no persistence across restarts is implied
+**Given** the `/products` route is active
+**When** the page is rendered
+**Then** it displays a Products heading
+**And** it displays **Product management is under development.**
+**And** it provides no CRUD workflow
 
-### Scenario: Use the configured API base URL
+### BDD-010 — Request and display all dashboard datasets
 
-**Given** the frontend environment is configured with an API base URL  
-**When** the dashboard requests each dataset  
-**Then** all three requests target that base URL  
-**And** changing the configured base URL does not require changing component source code
+**Given** the Dashboard is active and the API returns all three collections
+**When** dashboard data loads
+**Then** the frontend requests `GET /api/weatherforecast?count=5`, `GET /api/customers`, and `GET /api/products` from the configured base URL
+**And** it displays forecast date, summary, and temperature, customer name and email, and product name and price
+**And** weather is clearly labeled generated sample data
 
-### Scenario: Permit the Angular development origin
+### BDD-011 — Show summary and reusable dashboard sections
 
-**Given** the API is running in the Development environment  
-**When** a browser request to an API endpoint has origin `http://localhost:4200`  
-**Then** the API CORS policy permits that origin
+**Given** Dashboard data is displayed
+**When** the dashboard is rendered
+**Then** it shows summary/stat cards and weather, customer-list, and product-list sections
+**And** presentation sections receive typed state and do not call the API service directly
 
-### Scenario: Adapt the layout to a narrow viewport
+### BDD-012 — Use existing customer and product seeds
 
-**Given** the dashboard is displayed at a mobile viewport width  
-**When** a user navigates among dashboard sections and views their data  
-**Then** navigation and content remain visible and usable  
-**And** the page does not require horizontal scrolling for its primary layout
+**Given** a fresh API process has started
+**When** a client requests `GET /api/customers` and `GET /api/products`
+**Then** each collection contains three sample records
+**And** restarting the API restores the startup records
 
-## Validation Failures
+### BDD-013 — Permit the Development frontend origin
 
-### Scenario: Reject an unconfigured cross-origin host
+**Given** the API runs in Development
+**When** the browser sends a request with Origin `http://localhost:4200`
+**Then** the configured CORS policy permits the origin
 
-**Given** the API is running with an explicit CORS allowlist  
-**And** the browser request origin is not in that allowlist  
-**When** the browser requests a dashboard API endpoint  
-**Then** the API does not grant that origin cross-origin access
+### BDD-014 — Use explicit non-Development origins
 
-### Scenario: Reject malformed CORS origin configuration
+**Given** the API runs outside Development
+**When** allowed origins are missing, malformed, or wildcard
+**Then** startup/configuration fails rather than enabling unrestricted origins
+**And** when valid explicit origins are configured, only those origins receive CORS permission
 
-**Given** an allowed-origin setting contains a value that is not a valid origin  
-**When** the API CORS configuration is initialized  
-**Then** the invalid configuration is reported as a configuration error  
-**And** the invalid value is not silently treated as an unrestricted origin
+### BDD-015 — Document local full-stack setup
 
-## Error Handling
+**Given** a developer follows the repository README
+**When** they configure the API URL and CORS and start the API and frontend
+**Then** the documentation provides the required commands and configuration locations
+**And** it no longer describes the replaced fragment-only dashboard navigation as current behavior
 
-### Scenario: Show a loading state while requests are pending
+## Validation Scenarios
 
-**Given** one or more dashboard API requests have not completed  
-**When** the corresponding sections are rendered  
-**Then** each pending section displays a loading state
+### BDD-016 — Keep the root template minimal
 
-### Scenario: Display an error and retry a failed request
+**Given** the Angular root component is compiled
+**When** its template is rendered
+**Then** it contains only the router outlet
+**And** the shared shell is rendered beneath the route-level shell component
 
-**Given** the API request for a dashboard section fails  
-**When** the section renders the failed result  
-**Then** the section displays a visible error state and retry control  
-**And** selecting retry reissues that section’s request  
-**And** successful sections continue to display their data
+### BDD-017 — Keep route links client-side
 
-### Scenario: Do not convert an API failure into an empty result
+**Given** a user is on any supported route
+**When** the user activates the wordmark, breadcrumb Home, or feature navigation link
+**Then** Angular Router changes the route
+**And** the browser document is not reloaded
 
-**Given** a dashboard API request fails with a network error or unsuccessful HTTP status  
-**When** the section handles the failure  
-**Then** it displays an error state  
-**And** it does not display the successful-empty state
+## Error Handling Scenarios
+
+### BDD-018 — Show independent loading states
+
+**Given** the three dashboard requests are pending
+**When** dashboard sections render
+**Then** each pending dataset displays its own loading state and accessible status announcement
+
+### BDD-019 — Show an independent retryable error
+
+**Given** the product request fails while weather and customers succeed
+**When** dashboard state updates
+**Then** the product section displays a user-facing error and retry control
+**And** weather and customers continue to display their successful results
+**And** retry reissues only the product request
+
+### BDD-020 — Distinguish an empty success from a failure
+
+**Given** a dataset request succeeds with an empty collection
+**When** its section renders
+**Then** it displays the successful-empty state
+**And** it does not display an error or retry control
+
+### BDD-021 — Do not replace failures with empty or sample data
+
+**Given** a dashboard API request fails with a network or HTTP error
+**When** the corresponding section handles the result
+**Then** it displays an error state
+**And** it does not display the successful-empty state or fallback sample records
 
 ## Edge Cases
 
-### Scenario: Display an empty collection
+### BDD-022 — Complete dataset requests at different times
 
-**Given** a dashboard API request succeeds with an empty collection  
-**When** the section renders the result  
-**Then** it displays a clear empty state  
-**And** it does not display an error or loading state
+**Given** the weather, customer, and product requests complete in different orders
+**When** each response arrives
+**Then** only the matching dataset state changes
+**And** a pending or failed request does not block another dataset's successful display
 
-### Scenario: Handle datasets completing at different times
+### BDD-023 — Handle direct route refresh
 
-**Given** the weather, customer, and product requests complete at different times  
-**When** each response arrives  
-**Then** each section updates independently  
-**And** a pending or failed request does not block another section’s successful data
+**Given** the user directly opens or refreshes `/customers` or `/products`
+**When** the SPA route resolves
+**Then** the corresponding placeholder page and shell are rendered
 
-### Scenario: Retain the existing weather sample-data semantics
+### BDD-024 — Preserve route-specific content on navigation
 
-**Given** the dashboard requests weather forecasts  
-**When** the existing weather endpoint returns generated sample forecasts  
-**Then** the dashboard displays the returned forecast fields  
-**And** it does not claim that the values are live or location-specific
+**Given** the user selects Customers or Products from the responsive navigation
+**When** the route changes
+**Then** the breadcrumb and placeholder content match the selected route
+**And** the page remains usable without horizontal scrolling for its primary layout
+
+## Security Scenarios
+
+### BDD-025 — Do not expose mutation workflows on placeholders
+
+**Given** Customers or Products placeholder page is active
+**When** the rendered page is inspected and operated
+**Then** no create, edit, or delete UI or action is available
+
+### BDD-026 — Do not render API values as trusted HTML
+
+**Given** an API response contains text with HTML-like characters
+**When** the dashboard renders the value
+**Then** Angular renders it as text rather than executable trusted HTML
+
+## Non-Functional Scenarios
+
+### BDD-027 — Operate navigation using keyboard
+
+**Given** a user navigates without a pointer
+**When** they move focus through the shell, open/close the responsive menu, and activate links
+**Then** controls are keyboard-operable
+**And** focus remains visible and is managed appropriately when the menu opens or closes
+
+### BDD-028 — Announce route and request state accessibly
+
+**Given** a screen-reader user is using the application
+**When** the route changes or a dataset enters loading or error state
+**Then** the active page/navigation and state changes are exposed through appropriate semantics and announcements
+
+### BDD-029 — Meet responsive and accessibility target
+
+**Given** the application is viewed at supported desktop and small viewport sizes
+**When** navigation, breadcrumbs, page content, and dashboard states are evaluated
+**Then** the primary layout remains usable without avoidable horizontal scrolling
+**And** the UI is verified against the agreed WCAG 2.1 AA target, including color contrast and focus visibility
+
+### BDD-030 — Preserve API contracts
+
+**Given** the frontend is updated
+**When** existing API consumers call the customer, product, or weather endpoints
+**Then** routes and response shapes remain unchanged

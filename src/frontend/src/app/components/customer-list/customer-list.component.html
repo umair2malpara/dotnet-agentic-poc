@@ -21,7 +21,7 @@
         (retry)="retry.emit()"
       />
     } @else if (current.data.length === 0) {
-      <div class="state-card compact-state">No customers found.</div>
+      <div class="state-card compact-state" role="status">No customers found.</div>
     } @else {
       <div class="record-list">
         @for (customer of current.data; track customer.id) {

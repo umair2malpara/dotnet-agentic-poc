@@ -1,0 +1,271 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.topbar {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: flex;
+  height: 72px;
+  align-items: center;
+  padding: 0 32px;
+  border-bottom: 1px solid #e9edf2;
+  background: #fff;
+  color: #14213d;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 11px;
+  background: #3157d5;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.topbar-caption {
+  margin-left: auto;
+  color: #586477;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #26344c;
+  cursor: pointer;
+}
+
+.menu-icon {
+  display: grid;
+  width: 20px;
+  gap: 4px;
+}
+
+.menu-icon span {
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.menu-icon.close-icon span:first-child {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.menu-icon.close-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-icon.close-icon span:last-child {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.layout {
+  display: grid;
+  min-height: calc(100vh - 72px);
+  grid-template-columns: 236px minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 72px;
+  display: flex;
+  height: calc(100vh - 72px);
+  flex-direction: column;
+  padding: 30px 16px 18px;
+  border-right: 1px solid #e9edf2;
+  background: #fff;
+}
+
+.nav-label {
+  padding: 0 14px;
+  margin: 0 0 12px;
+  color: #586477;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.sidebar nav {
+  display: grid;
+  gap: 5px;
+}
+
+.nav-link {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  border-radius: 9px;
+  color: #586477;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: #eef2ff;
+  color: #3157d5;
+}
+
+.content {
+  width: min(100%, 1440px);
+  min-width: 0;
+  padding: 24px clamp(24px, 4vw, 58px);
+  margin: 0 auto;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin: 0 0 24px;
+  color: #586477;
+  font-size: 13px;
+  list-style: none;
+}
+
+.breadcrumbs li + li::before {
+  padding-right: 8px;
+  color: #586477;
+  content: '/';
+}
+
+.breadcrumbs a {
+  color: #3157d5;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.breadcrumbs [aria-current='page'] {
+  color: #26344c;
+  font-weight: 600;
+}
+
+.brand:focus-visible,
+.menu-toggle:focus-visible,
+.nav-link:focus-visible,
+.breadcrumbs a:focus-visible {
+  outline: 3px solid #3157d5;
+  outline-offset: 3px;
+}
+
+.content:focus {
+  outline: none;
+}
+
+.content h1:focus {
+  outline: 2px solid #3157d5;
+  outline-offset: 5px;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    height: 62px;
+    padding: 0 17px;
+  }
+
+  .brand {
+    font-size: 14px;
+  }
+
+  .brand-mark {
+    width: 31px;
+    height: 31px;
+  }
+
+  .topbar-caption {
+    font-size: 11px;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .layout {
+    display: block;
+    min-height: calc(100vh - 62px);
+  }
+
+  .sidebar {
+    position: sticky;
+    z-index: 1;
+    top: 62px;
+    display: none;
+    height: auto;
+    padding: 12px;
+    border-right: 0;
+    border-bottom: 1px solid #e9edf2;
+  }
+
+  .sidebar.mobile-open {
+    display: flex;
+  }
+
+  .nav-label {
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
+
+  .sidebar nav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content {
+    padding: 22px 17px;
+  }
+
+  .breadcrumbs ol {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .topbar-caption {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

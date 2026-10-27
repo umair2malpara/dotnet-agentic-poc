@@ -1,134 +1,18 @@
 :host {
   display: block;
-  min-height: 100vh;
+  min-width: 0;
 }
 
-.topbar {
-  position: sticky;
-  z-index: 2;
-  top: 0;
-  display: flex;
-  height: 72px;
-  padding: 0 32px;
-  border-bottom: 1px solid #e9edf2;
-  background: #fff;
-  color: #14213d;
+.dashboard-page {
+  min-width: 0;
 }
 
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: inherit;
-  font-size: 16px;
-  font-weight: 750;
-  letter-spacing: -0.03em;
-  text-decoration: none;
-}
-
-.brand-mark {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border-radius: 11px;
-  background: #3157d5;
-  color: #fff;
-  font-size: 19px;
-  font-weight: 800;
-}
-
-.topbar-caption {
-  margin-left: auto;
-  color: #818b9b;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.layout {
-  display: grid;
-  min-height: calc(100vh - 72px);
-  grid-template-columns: 236px minmax(0, 1fr);
-}
-
-.sidebar {
-  position: sticky;
-  top: 72px;
-  display: flex;
-  height: calc(100vh - 72px);
-  flex-direction: column;
-  padding: 30px 16px 18px;
-  border-right: 1px solid #e9edf2;
-  background: #fff;
-}
-
-.nav-label,
 .eyebrow {
   margin: 0;
-  color: #939cac;
+  color: #586477;
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.12em;
-}
-
-.nav-label {
-  padding: 0 14px;
-  margin-bottom: 12px;
-}
-
-.sidebar nav {
-  display: grid;
-  gap: 5px;
-}
-
-.nav-link {
-  display: flex;
-  min-height: 44px;
-  align-items: center;
-  gap: 12px;
-  padding: 0 14px;
-  border-radius: 9px;
-  color: #687386;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background-color 120ms ease, color 120ms ease;
-}
-
-.nav-link mat-icon {
-  width: 19px;
-  height: 19px;
-  font-size: 19px;
-}
-
-.nav-link:hover,
-.nav-link.active {
-  background: #eef2ff;
-  color: #3157d5;
-}
-
-.sidebar-footer {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-top: auto;
-  padding: 14px 10px 4px;
-  color: #818b9b;
-  font-size: 11px;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #32b67a;
-  box-shadow: 0 0 0 3px #e4f7ee;
-}
-
-.content {
-  width: min(100%, 1440px);
-  padding: 38px clamp(24px, 4vw, 58px) 24px;
-  margin: 0 auto;
 }
 
 .page-heading {
@@ -154,7 +38,7 @@ h1 {
 
 .subtitle {
   margin-bottom: 0;
-  color: #8791a1;
+  color: #586477;
   font-size: 13px;
 }
 
@@ -166,7 +50,7 @@ h1 {
   border: 1px solid #e8ecf2;
   border-radius: 9px;
   background: #fff;
-  color: #687386;
+  color: #586477;
   font-size: 11px;
   white-space: nowrap;
 }
@@ -174,7 +58,7 @@ h1 {
 .today-chip mat-icon {
   width: 16px;
   height: 16px;
-  color: #8791a1;
+  color: #586477;
   font-size: 16px;
 }
 
@@ -193,7 +77,7 @@ h1 {
 
 .page-footer {
   padding: 21px 0 4px;
-  color: #a2aab6;
+  color: #586477;
   font-size: 10px;
   text-align: center;
 }
@@ -209,68 +93,6 @@ h1 {
 }
 
 @media (max-width: 720px) {
-  .topbar {
-    height: 62px;
-    padding: 0 17px;
-  }
-
-  .brand {
-    font-size: 14px;
-  }
-
-  .brand-mark {
-    width: 31px;
-    height: 31px;
-  }
-
-  .topbar-caption {
-    font-size: 11px;
-  }
-
-  .layout {
-    display: block;
-    min-height: calc(100vh - 62px);
-  }
-
-  .sidebar {
-    position: sticky;
-    z-index: 1;
-    top: 62px;
-    height: auto;
-    padding: 8px 12px;
-    border-right: 0;
-    border-bottom: 1px solid #e9edf2;
-  }
-
-  .nav-label,
-  .sidebar-footer {
-    display: none;
-  }
-
-  .sidebar nav {
-    display: flex;
-    gap: 4px;
-    overflow-x: auto;
-  }
-
-  .nav-link {
-    min-height: 39px;
-    flex: 0 0 auto;
-    gap: 7px;
-    padding: 0 10px;
-    font-size: 11px;
-  }
-
-  .nav-link mat-icon {
-    width: 17px;
-    height: 17px;
-    font-size: 17px;
-  }
-
-  .content {
-    padding: 25px 17px 20px;
-  }
-
   .page-heading {
     align-items: flex-start;
   }
@@ -278,7 +100,7 @@ h1 {
   .today-chip {
     max-width: 128px;
     padding: 8px;
-    font-size: 9px;
+    font-size: 10px;
     white-space: normal;
   }
 
@@ -298,10 +120,6 @@ h1 {
 }
 
 @media (max-width: 380px) {
-  .topbar-caption {
-    display: none;
-  }
-
   .summary-grid {
     grid-template-columns: 1fr;
   }

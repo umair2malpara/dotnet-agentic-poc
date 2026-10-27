@@ -1,0 +1,74 @@
+<header class="topbar">
+  <a
+    class="brand"
+    routerLink="/dashboard"
+    aria-label="Dotnet Agentic POC home"
+    (click)="closeMobileNavigation()"
+  >
+    <span class="brand-mark" aria-hidden="true">D</span>
+    <span>Dotnet Agentic POC</span>
+  </a>
+  <span class="topbar-caption">Operations dashboard</span>
+  <button
+    #menuButton
+    class="menu-toggle"
+    type="button"
+    aria-controls="feature-navigation"
+    [attr.aria-expanded]="mobileNavigationOpen()"
+    [attr.aria-label]="mobileNavigationOpen() ? 'Close navigation' : 'Open navigation'"
+    (click)="toggleMobileNavigation()"
+    (keydown.escape)="closeMobileNavigation()"
+  >
+    <span class="menu-icon" [class.close-icon]="mobileNavigationOpen()" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+</header>
+
+<div class="layout">
+  <aside
+    id="feature-navigation"
+    class="sidebar"
+    [class.mobile-open]="mobileNavigationOpen()"
+    aria-label="Feature navigation"
+    (keydown)="onNavigationKeydown($event)"
+  >
+    <p class="nav-label">Workspace</p>
+    <nav aria-label="Features">
+      <a
+        class="nav-link"
+        routerLink="/customers"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMobileNavigation()"
+      >
+        <span>Customers</span>
+      </a>
+      <a
+        class="nav-link"
+        routerLink="/products"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMobileNavigation()"
+      >
+        <span>Products</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a routerLink="/dashboard">Home</a></li>
+        <li>
+          <span aria-current="page" aria-live="polite">{{ breadcrumb() }}</span>
+        </li>
+      </ol>
+    </nav>
+    <router-outlet (activate)="onPageActivated()" />
+  </main>
+</div>

@@ -1,150 +1,193 @@
 # Issue #6 Technical Specification
 
-**Status:** Approved; updated to reflect implementation  
-**Issue:** [Create Angular Frontend Application with Dashboard, Navbar, and API Integration](https://github.com/umair2malpara/dotnet-agentic-poc/issues/6)
+**Work item:** [#6 — Enhance the Angular Dashboard with Customer and Product Navigation](https://github.com/umair2malpara/dotnet-agentic-poc/issues/6)
+**Source:** GitHub Issue
+**Discovery:** Complete; shared understanding confirmed
+**Specification status:** Approved by the user for the #setup handoff
+
+## Architecture Overview
+
+Keep the Angular application as the existing standalone SPA under `src/frontend/`. Retain the root `App` template as a single router outlet. Introduce a shared application-shell route component that owns the responsive top bar, wordmark, two-link feature navigation, route-aware breadcrumb, and a nested router outlet for the active page. Configure Dashboard, Customers, and Products as child routes of that shell; redirect the empty child path and unknown paths to Dashboard. Lazy-load route components where appropriate.
+
+Continue using the existing dashboard feature to coordinate typed API requests and per-dataset state. Reuse its standalone weather, customer-list, product-list, summary-card, and shared dataset-status components. Keep presentation components independent of `DashboardApiService`. Add small standalone placeholder components for the Customers and Products routes.
+
+No backend API, repository, domain, or persistence redesign is required. Existing endpoint contracts, sample records, and CORS behavior already satisfy the API-related requirements and should be preserved.
+
+## Solution Design
+
+### Frontend design
+
+- Add an `AppShellComponent` at the route level below the root router outlet. It renders the persistent top bar and desktop left sidebar, and includes a nested router outlet for route content.
+- Use route metadata to determine the breadcrumb label for the active child route. The Home breadcrumb is a client-side link to `/dashboard`.
+- Provide exactly Customers and Products as feature navigation links. Mark the active link accessibly. At small viewports, use a compact accessible drawer/menu that exposes the same links; provide a keyboard-operable toggle and clear open/close state.
+- Configure child routes for Dashboard, Customers, and Products, with empty and wildcard redirects to Dashboard. Preserve client-side navigation. The Dashboard wordmark and Home breadcrumb both target `/dashboard`.
+- Add focused standalone Customers and Products placeholder components containing their heading and exact approved message. Do not add data fetching or mutation workflows to these pages.
+- Retain the dashboard's independent request state and retry behavior. Dashboard presentation components continue to receive typed `DatasetState<T>` inputs and emit retry events.
+- Retain environment-based API URL configuration and the three existing GET request contracts. Do not put API calls in the shell or placeholder pages.
+- Preserve generated-weather labeling and the current successful-empty, loading, and error/retry presentations.
+- Use semantic navigation and breadcrumb landmarks, keyboard operability, visible focus, accessible names, active-route semantics, and appropriate live/status announcements. Validate the agreed WCAG 2.1 AA target, including contrast and narrow viewport behavior.
+
+### Backend design
+
+- No backend code changes are required by the approved requirements.
+- Preserve the existing controller → service → repository behavior and API contracts.
+- Preserve the three seeded fictional customers and three sample products in the in-memory repositories.
+- Preserve Development CORS for `http://localhost:4200`. Outside Development, preserve required explicit `Cors:AllowedOrigins` configuration, validation, and no-wildcard behavior.
+
+### Integration design
+
+The application shell and pages use Angular Router only. On Dashboard activation, the existing Dashboard component calls `DashboardApiService`, which uses the configured environment base URL for:
+
+- `GET {apiBaseUrl}/api/weatherforecast?count=5`
+- `GET {apiBaseUrl}/api/customers`
+- `GET {apiBaseUrl}/api/products`
+
+Each request updates only its corresponding dataset state. Failed requests remain errors until retried; they are not converted to empty data or sample fallback values.
 
 ## Impact Analysis
 
-### Controllers
+### Existing functionality affected
 
-- `WeatherForecastController` exposes `GET /api/weatherforecast` and accepts the optional `count` query parameter (default 5).
-- `CustomersController` exposes `GET /api/customers`.
-- `ProductsController` exposes `GET /api/products`.
-- No controller or resource contract changes are required.
+- Replace the Dashboard's section-fragment sidebar links (Overview, Weather, Customers, Products) with the shared two-link route navigation.
+- Move shell-level top bar, sidebar, and page-content layout responsibilities out of the Dashboard presentation into the shared shell, while preserving dashboard content and data coordination.
+- Replace dashboard-only navigation with route-aware breadcrumbs and feature routes.
+- Update README wording that currently describes fragment-based dashboard navigation.
 
-### Services
+### Existing functionality to preserve
 
-- Existing weather, customer, and product services remain the API’s business layer.
-- Add no new API services unless needed to initialize seeded repository data; prefer initializing the current in-memory repositories without expanding the layering.
+- Dashboard API request URLs and environment-based API configuration.
+- Typed frontend models and independent weather/customer/product loading/error/success states.
+- Shared retry and successful-empty presentation.
+- Generated sample-weather disclosure and summary/stat cards.
+- Existing seeded in-memory API data and CORS configuration.
+- Root application template containing only the router outlet.
 
-### Repositories
+### Backend impact analysis
 
-- `InMemoryCustomerRepository` currently starts empty. Initialize it with three fictional `Customer` records.
-- `InMemoryProductRepository` currently starts empty. Initialize it with three sample `Product` records.
-- Keep the current in-memory storage and CRUD semantics. Seed records exist for the lifetime of the API process and reset on restart.
-- Use deterministic IDs and fictional values so the sample data is stable and repeatable.
+- **Controllers:** No changes. Existing controllers expose the required GET routes; existing additional API CRUD endpoints remain unchanged and are not exposed as UI workflows on the placeholder pages.
+- **Services:** No changes.
+- **Repositories:** No changes. Customer/product seeds and in-memory reset behavior already exist.
+- **Models/DTOs:** No changes. Existing API fields map to current TypeScript interfaces.
+- **Middleware:** No changes.
+- **Configuration:** No backend configuration changes expected. Existing Development and non-Development CORS handling meets the approved scope.
+- **Database:** No database changes required. No database changes required.
+- **External integrations:** No new external service integration. Weather remains generated sample data.
 
-### Models
+### Frontend impact analysis
 
-- Reuse `Customer` (`Id`, `Name`, `Email`), `Product` (`Id`, `Name`, `Price`), and `WeatherForecast` (`Date`, `TemperatureC`, `TemperatureF`, `Summary`).
-- Do not alter existing model or JSON contracts for this dashboard.
+- **Components:** Add shared application shell and two placeholder page components. Adapt the existing Dashboard view and styles to render within the shell and retain dashboard sections.
+- **Services:** No service change expected; preserve `DashboardApiService`.
+- **Models:** No model change expected; preserve current typed API and dataset-state types.
+- **Routes:** Add nested route configuration for the shell and three page routes, with redirects and lazy loading where appropriate.
+- **Forms:** None. No CRUD or forms are in scope.
+- **State:** Keep request/state coordination in `DashboardComponent`; shell state is limited to current route and responsive menu visibility.
+- **UI:** Add active route, breadcrumb, responsive drawer/menu, and accessible interactions. Preserve dashboard data display and visual patterns.
+- **Tests:** Expand router coverage and add coverage for shell navigation/breadcrumb/accessibility-relevant behavior, placeholder pages, and dashboard state isolation/retry.
 
-### DTOs
+### API impact analysis
 
-- No new API DTOs are required. The dashboard consumes the existing response shapes.
-- Define frontend TypeScript interfaces for the three API response models rather than using untyped response data.
+- **Endpoints added/modified/removed:** None.
+- **Request/response changes:** None.
+- **Validation/versioning:** No contract or versioning change.
+- **CORS:** Existing origin behavior is preserved and verified; no wildcard origin is introduced.
 
-### Middleware
+### Database impact analysis
 
-- No middleware changes are expected.
+No database changes required. No tables, views, procedures, functions, indexes, migrations, or rollback steps are introduced.
 
-### Configuration
+## Dependency Analysis
 
-- Add Angular environment configuration for the API base URL. The Angular API services should use that setting when constructing endpoint URLs.
-- Add an API CORS policy named for the frontend, registered in `Program.cs`.
-- In Development, allow the known Angular development origin `http://localhost:4200`.
-- In non-Development environments, read allowed origins from configuration (for example, a `Cors:AllowedOrigins` array). Do not use a wildcard origin with credentials. Production origin values are deployment-owned and must not be guessed.
-- Register CORS services and apply the policy before controller endpoint execution.
+- **Internal:** Angular Router, existing dashboard feature, API service, typed models, reusable dashboard components, current .NET API endpoints.
+- **External:** Existing Angular Material and Angular dependencies only.
+- **Libraries:** No new dependency is required. Verify the Angular version configured in the project when implementation begins; upgrade only if needed to meet issue requirements.
 
-### Database
+## Security Considerations
 
-- No database or migrations. The existing repositories are in-memory; seeded records are ephemeral.
+- No authentication or authorization is introduced; both are explicitly out of scope.
+- CORS does not substitute for authentication. Preserve exact Development origin and explicit non-Development origins; do not use wildcard origins.
+- Do not add secrets to environment files. API base URLs and origin allowlists are configuration, not credentials.
+- Render API-provided values through normal Angular interpolation; do not treat them as trusted HTML.
+- Keep error messages user-facing and avoid stack traces, internal host details, or sensitive configuration.
+- The Customer/Product placeholders must not imply authorization controls or expose mutation actions.
 
-## File Changes
+## Performance Considerations
 
-### Files To Add
+- Keep route components lazy-loaded where appropriate.
+- Preserve the independent dataset requests so completion/failure of one does not block the others.
+- No caching or pagination change is required for this dashboard scope.
+- No numeric performance targets were specified.
 
-- `src/frontend/` Angular workspace and application generated using the Angular CLI.
-- `src/frontend/src/app/app.routes.ts` — root, dashboard, and fallback route definitions, with the dashboard component lazy-loaded.
-- `src/frontend/src/app/features/dashboard/` — dashboard feature component, shell template, and responsive layout styles.
-- `src/frontend/src/app/components/dashboard-stat-card/` — reusable summary-card component.
-- `src/frontend/src/app/components/dataset-status/` — shared loading, error, and retry component.
-- `src/frontend/src/app/components/weather-forecast/`, `customer-list/`, and `product-list/` — typed presentation components for each dataset.
-- `src/frontend/src/app/components/index.ts` — exports reusable dashboard components.
-- Frontend API model interfaces and a typed API service for the weather, customer, and product endpoints.
-- Frontend environment configuration and Angular Material setup.
-- Frontend unit tests for API services, display states, reusable components, and route redirects.
-- `specifications/issue-6/functional-spec.md`
-- `specifications/issue-6/technical-spec.md`
-- `specifications/issue-6/bdd-tests.md`
+## Error Handling Strategy
 
-### Files To Modify
+- Keep current independent loading/error/success states for each dashboard dataset.
+- A failed request presents a concise error and retries only that dataset.
+- A successful empty result remains distinguishable from loading and error.
+- Do not provide success-shaped fallback data on request failure.
+- Unknown frontend routes redirect to Dashboard. Invalid non-Development CORS configuration remains a visible startup/configuration failure.
 
-- `src/frontend/src/app/app.html` — keep the root template to the router outlet.
-- `src/frontend/src/app/app.config.ts` — register the Angular router and fragment/scroll behavior.
-- `src/backend/Api/Program.cs` — register and apply the configured CORS policy.
-- `src/backend/Api/appsettings.json` — define the non-secret CORS allowed-origin configuration structure; deployment values remain environment-specific.
-- `src/backend/Infrastructure/Repositories/InMemoryCustomerRepository.cs` — initialize three fictional sample customers.
-- `src/backend/Infrastructure/Repositories/InMemoryProductRepository.cs` — initialize three sample products.
-- `src/backend/Tests/` — add focused tests for seed contents and CORS behavior if the existing test host supports them.
-- Root `README.md` — document how to run the API and frontend together, API URL configuration, Development CORS behavior, and ephemeral sample data.
+## Logging and Monitoring Strategy
 
-### Files To Delete
+- No new telemetry, audit logs, metrics, or alerting are required.
+- Preserve existing API logging and correlation middleware.
+- Do not log or display customer email addresses or entire response payloads unnecessarily.
+
+## Risks and Mitigations
+
+| Risk | Mitigation |
+|---|---|
+| Local API failure, untrusted HTTPS certificate, or CORS mismatch prevents data requests | Keep per-dataset errors visible and retryable; retain documented API/frontend startup and configuration steps |
+| Responsive shell makes routes hard to operate using keyboard or assistive technology | Use semantic navigation, accessible menu controls, visible focus, active-route state, and accessibility verification |
+| Generated forecasts are mistaken for live conditions | Retain a clear sample-data label |
+| Existing documentation/specs suggest obsolete fragment-only navigation | Update root README and replace superseded issue #6 specification content |
+
+## File Change Plan
+
+The following is the expected implementation scope, not a record of changes in this specification phase.
+
+### Files to add
+
+- `src/frontend/src/app/app-shell/app-shell.component.ts`
+- `src/frontend/src/app/app-shell/app-shell.component.html`
+- `src/frontend/src/app/app-shell/app-shell.component.scss`
+- `src/frontend/src/app/app-shell/app-shell.component.spec.ts`
+- `src/frontend/src/app/features/customers/customers.component.ts`
+- `src/frontend/src/app/features/customers/customers.component.html`
+- `src/frontend/src/app/features/customers/customers.component.scss`
+- `src/frontend/src/app/features/customers/customers.component.spec.ts`
+- `src/frontend/src/app/features/products/products.component.ts`
+- `src/frontend/src/app/features/products/products.component.html`
+- `src/frontend/src/app/features/products/products.component.scss`
+- `src/frontend/src/app/features/products/products.component.spec.ts`
+
+### Files to modify
+
+- `src/frontend/src/app/app.routes.ts` — shell parent, feature routes, and redirects.
+- `src/frontend/src/app/app.spec.ts` — root/unknown redirects, direct routes, and application navigation integration coverage as appropriate.
+- `src/frontend/src/app/features/dashboard/dashboard.component.html` — retain dashboard data sections without owning global shell navigation.
+- `src/frontend/src/app/features/dashboard/dashboard.component.scss` — retain dashboard-specific styles after shell layout extraction.
+- `README.md` — replace obsolete fragment-navigation description and retain/update local API URL and CORS run instructions.
+
+Other frontend API, environment, model, component, and backend files are expected to remain unchanged unless inspection during implementation reveals a requirement gap.
+
+### Files to delete
 
 - None.
 
-## Technical Design
+### Expected folder changes
 
-### Architecture Overview
+- **Frontend:** Add shared shell and Customers/Products feature folders; update route configuration and Dashboard composition.
+- **Backend:** No source/configuration changes expected.
+- **Tests:** Add focused tests for shell navigation, page routes/placeholders, and relevant dashboard states; extend root routing coverage.
+- **Documentation:** Update `README.md`; no new runtime setup is required.
+- **Specifications:** This package documents the expected work and does not itself implement it.
 
-- Keep the frontend as an independent Angular application under `src/frontend/`; do not mix Angular build artifacts or dependencies into the .NET project.
-- Keep `src/frontend/src/app/app.html` as a minimal router outlet. Configure `/` to redirect to `/dashboard`, lazy-load the dashboard feature at `/dashboard`, and redirect unknown paths to `/dashboard`.
-- Configure Angular router anchor scrolling and scroll-position restoration for the dashboard section links.
-- Use Angular standalone components and the current Angular CLI defaults unless implementation reveals a repository/tooling constraint.
-- Compose the dashboard page from reusable weather, customer-list, product-list, summary-card, and dataset-status components. Keep API fetching/state coordination in the dashboard feature component and pass typed state to presentation components.
-- Keep presentation components independent of the API service. Data components receive a typed dataset state through inputs and emit retry events to the dashboard feature; the shared dataset-status component presents loading and error/retry UI.
-- Use Angular Material for the application shell and dashboard UI, with responsive CSS for layout behavior.
-- Keep HTTP access in typed Angular services using `HttpClient`; the dashboard feature owns request and loading/error/retry state.
-- Retain the existing .NET controller → service → repository architecture and in-memory storage.
+## Validation Plan
 
-### Data Flow
-
-1. The Angular router maps `/` to `/dashboard`, lazy-loads the dashboard feature, and renders it through the root router outlet without a full-page navigation.
-2. On dashboard activation, the dashboard feature independently requests weather, customers, and products through the typed API service.
-3. Each service builds its URL from the configured API base URL:
-   - `GET {apiBaseUrl}/api/weatherforecast?count=5`
-   - `GET {apiBaseUrl}/api/customers`
-   - `GET {apiBaseUrl}/api/products`
-4. The dashboard feature passes typed state to the reusable presentation components. The components render data, empty states, or the shared loading/error/retry component and emit retry events to the dashboard feature.
-5. Dashboard section links update the route fragment and scroll to the selected section without reloading the document.
-6. The API’s in-memory customer and product repositories provide the three startup seed records; the weather repository continues generating its existing sample forecasts.
-7. Browser requests from the Angular Development origin are accepted by the API’s configured CORS policy.
-
-### API Changes
-
-- No route, method, request, or response-shape changes.
-- Add CORS configuration and middleware wiring.
-- Populate the in-memory customer and product repositories with three sample records each.
-
-### Database Changes
-
-- None. No persistence is introduced.
-
-### Validation Strategy
-
-- Use typed frontend interfaces for API contracts and verify that all expected data fields render correctly.
-- Confirm the Angular API base URL is read from environment configuration and used for all three requests.
-- For the read-only dashboard, no customer/product request forms or mutation payload validation are in scope.
-- Validate the configured CORS origin values as origins (scheme and host, optional port), rather than accepting arbitrary URL paths or wildcard origins.
-
-### Error Handling Strategy
-
-- Track each dashboard dataset’s loading, success, empty, and error states independently so one failed request does not suppress successful sections.
-- Display a concise failure message and retry control for the affected dataset. A retry reissues only that dataset’s request.
-- Treat a successful empty collection as an empty state, not a request error.
-- Do not silently replace failed requests with empty arrays or demo data in the frontend.
-- Keep API exception/status handling consistent with existing middleware/controller behavior.
-
-### Logging Strategy
-
-- Do not log customer email addresses or full response payloads in the browser or API logs.
-- Use the existing API logging configuration; add no new logging dependency for this dashboard.
-- Surface request failures in the UI without exposing stack traces, internal host details, or sensitive configuration values.
-
-### Security Considerations
-
-- CORS is a browser-origin policy, not authentication or authorization. The API remains unauthenticated as currently implemented.
-- Keep CORS allowlists explicit; do not enable arbitrary origins or credentials with wildcard origins.
-- Store no credentials or secrets in Angular environment files. The API base URL and allowed origins are deployment configuration, not secrets.
-- Use fictional seed data only.
-- Do not render API-provided strings as trusted HTML.
+- Run the existing frontend build and configured unit test runner.
+- Verify root and wildcard redirects, direct feature routes, wordmark/navigation/breadcrumb destinations, and absence of full page reload.
+- Verify exact placeholder copy and absence of page CRUD controls.
+- Verify API service requests still use the configured base URL and required endpoints.
+- Verify independent loading, empty, error, and retry behavior for all dashboard datasets.
+- Run existing backend tests for sample seeds and verify Development/non-Development CORS configuration without changing API contracts.
+- Manually verify the responsive navigation, keyboard/focus behavior, state announcements, and contrast against the agreed WCAG 2.1 AA target.
+- Verify README local run and configuration instructions match current scripts/configuration.
