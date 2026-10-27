@@ -13,6 +13,8 @@
   </Folder>
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/test.yml" />
+    <File Path=".github/workflows/pr-validation.yml" />
   </Folder>
   <Folder Name="/docs/" />
   <Folder Name="/docs/architecture/">
@@ -26,12 +28,40 @@
     <File Path="ADR-003-angular-frontend.md" />
   </Folder>
   <Folder Name="/specifications/" />
+  <Folder Name="/specifications/issue-6/">
+    <File Path="specifications/issue-6/functional-spec.md" />
+    <File Path="specifications/issue-6/technical-spec.md" />
+    <File Path="specifications/issue-6/bdd-tests.md" />
+  </Folder>
+  <Folder Name="/specifications/issue-7/">
+    <File Path="specifications/issue-7/functional-spec.md" />
+    <File Path="specifications/issue-7/technical-spec.md" />
+    <File Path="specifications/issue-7/bdd-tests.md" />
+    <File Path="specifications/issue-7/traceability-matrix.md" />
+  </Folder>
   <Folder Name="/specifications/sample/">
     <File Path="bdd-tests.md" />
     <File Path="functional-spec.md" />
     <File Path="technical-spec.md" />
     <File Path="traceability-matrix.md" />
   </Folder>
-  <Project Path="DotnetAgenticPoc.Api.Tests/DotnetAgenticPoc.Api.Tests.csproj" />
-  <Project Path="DotnetAgenticPoc.Api/DotnetAgenticPoc.Api.csproj" />
+  <Folder Name="/docs/api/" />
+  <Folder Name="/docs/workflows/" />
+  <Folder Name="/docs/setup/" />
+  <Folder Name="/scripts/">
+    <File Path="scripts/build.ps1" />
+    <File Path="scripts/build.sh" />
+    <File Path="scripts/test.ps1" />
+    <File Path="scripts/test.sh" />
+  </Folder>
+  <Folder Name="/src/frontend/">
+    <File Path="src/frontend/package.json" />
+    <File Path="src/frontend/angular.json" />
+    <File Path="src/frontend/README.md" />
+  </Folder>
+  <Project Path="src/backend/Api/DotnetAgenticPoc.Api.csproj" />
+  <Project Path="src/backend/Application/DotnetAgenticPoc.Application.csproj" />
+  <Project Path="src/backend/Domain/DotnetAgenticPoc.Domain.csproj" />
+  <Project Path="src/backend/Infrastructure/DotnetAgenticPoc.Infrastructure.csproj" />
+  <Project Path="src/backend/Tests/DotnetAgenticPoc.Api.Tests.csproj" />
 </Solution>
