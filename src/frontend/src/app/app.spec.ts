@@ -3,7 +3,7 @@ import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { NEVER, of, throwError } from 'rxjs';
 import { vi } from 'vitest';
-import { DashboardApiService } from './dashboard-api.service';
+import { DashboardApiService } from './core/services/dashboard-api.service';
 import { appRoutes } from './app.routes';
 
 describe('application routing', () => {

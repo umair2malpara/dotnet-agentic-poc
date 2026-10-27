@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Customer, DatasetState } from '../../api.models';
+import { Customer, DatasetState } from '../../core/models/api.models';
 import { DatasetStatusComponent } from '../dataset-status/dataset-status.component';
 
 @Component({

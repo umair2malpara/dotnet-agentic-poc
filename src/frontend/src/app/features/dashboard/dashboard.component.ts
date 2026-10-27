@@ -1,14 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
-import { Customer, DatasetState, Product, WeatherForecast } from '../../api.models';
+import {
+  Customer,
+  DatasetState,
+  Product,
+  WeatherForecast,
+} from '../../core/models/api.models';
 import {
   CustomerListComponent,
   DashboardStatCardComponent,
   ProductListComponent,
   WeatherForecastComponent,
 } from '../../components';
-import { DashboardApiService } from '../../dashboard-api.service';
+import { DashboardApiService } from '../../core/services/dashboard-api.service';
 
 @Component({
   selector: 'app-dashboard',
