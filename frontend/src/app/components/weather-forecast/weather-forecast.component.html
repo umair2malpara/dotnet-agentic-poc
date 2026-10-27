@@ -1,0 +1,38 @@
+<section class="data-section" id="weather" aria-labelledby="weather-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">LOCAL OUTLOOK</p>
+      <h2 id="weather-title">Weather forecast</h2>
+    </div>
+    <button mat-button type="button" (click)="retry.emit()">
+      <mat-icon aria-hidden="true">refresh</mat-icon>
+      Refresh
+    </button>
+  </div>
+
+  @if (state(); as current) {
+    @if (current.status === 'loading' || current.status === 'error') {
+      <app-dataset-status
+        [status]="current.status"
+        [loadingMessage]="'Loading forecast…'"
+        [errorMessage]="current.status === 'error' ? current.message : ''"
+        (retry)="retry.emit()"
+      />
+    } @else if (current.data.length === 0) {
+      <div class="state-card">No forecast data is available right now.</div>
+    } @else {
+      <div class="weather-grid">
+        @for (forecast of current.data; track forecast.date) {
+          <mat-card class="weather-card">
+            <div class="weather-date">{{ forecast.date | date: 'EEE, MMM d' }}</div>
+            <mat-icon class="weather-symbol" aria-hidden="true">partly_cloudy_day</mat-icon>
+            <div class="weather-temperature">{{ forecast.temperatureC }}°<span>C</span></div>
+            <div class="weather-summary">{{ forecast.summary || 'Forecast' }}</div>
+            <div class="weather-secondary">{{ forecast.temperatureF }}°F</div>
+          </mat-card>
+        }
+      </div>
+    }
+  }
+  <p class="data-note">Sample forecast data provided by the API.</p>
+</section>

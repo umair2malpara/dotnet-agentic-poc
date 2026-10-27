@@ -1,0 +1,40 @@
+<section class="data-section detail-section" id="customers" aria-labelledby="customers-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">YOUR PEOPLE</p>
+      <h2 id="customers-title">Customers</h2>
+    </div>
+    <span class="count-pill">
+      @if (state(); as current) {
+        @if (current.status === 'success') { {{ current.data.length }} }
+      }
+    </span>
+  </div>
+
+  @if (state(); as current) {
+    @if (current.status === 'loading' || current.status === 'error') {
+      <app-dataset-status
+        [status]="current.status"
+        [loadingMessage]="'Loading customers…'"
+        [errorMessage]="current.status === 'error' ? current.message : ''"
+        [compact]="true"
+        (retry)="retry.emit()"
+      />
+    } @else if (current.data.length === 0) {
+      <div class="state-card compact-state">No customers found.</div>
+    } @else {
+      <div class="record-list">
+        @for (customer of current.data; track customer.id) {
+          <div class="record-row">
+            <div class="avatar">{{ initials(customer.name) }}</div>
+            <div class="record-details">
+              <span class="record-name">{{ customer.name }}</span>
+              <span class="record-subtitle">{{ customer.email }}</span>
+            </div>
+            <mat-icon class="row-chevron" aria-hidden="true">chevron_right</mat-icon>
+          </div>
+        }
+      </div>
+    }
+  }
+</section>

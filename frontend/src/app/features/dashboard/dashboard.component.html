@@ -1,0 +1,88 @@
+<mat-toolbar class="topbar">
+  <a class="brand" routerLink="/dashboard" aria-label="Dotnet Agentic POC home">
+    <span class="brand-mark" aria-hidden="true">D</span>
+    <span>Dotnet Agentic POC</span>
+  </a>
+  <span class="topbar-caption">Operations dashboard</span>
+</mat-toolbar>
+
+<div class="layout" id="dashboard">
+  <aside class="sidebar" aria-label="Dashboard navigation">
+    <p class="nav-label">Workspace</p>
+    <nav>
+      <a class="nav-link active" routerLink="/dashboard" fragment="overview">
+        <mat-icon aria-hidden="true">space_dashboard</mat-icon>
+        <span>Overview</span>
+      </a>
+      <a class="nav-link" routerLink="/dashboard" fragment="weather">
+        <mat-icon aria-hidden="true">wb_sunny</mat-icon>
+        <span>Weather</span>
+      </a>
+      <a class="nav-link" routerLink="/dashboard" fragment="customers">
+        <mat-icon aria-hidden="true">group</mat-icon>
+        <span>Customers</span>
+      </a>
+      <a class="nav-link" routerLink="/dashboard" fragment="products">
+        <mat-icon aria-hidden="true">inventory_2</mat-icon>
+        <span>Products</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="status-dot" aria-hidden="true"></span>
+      Connected to your workspace
+    </div>
+  </aside>
+
+  <main class="content">
+    <section class="page-heading" id="overview">
+      <div>
+        <p class="eyebrow">WORKSPACE / OVERVIEW</p>
+        <h1>Dashboard</h1>
+        <p class="subtitle">A snapshot of your weather, customers, and products.</p>
+      </div>
+      <div class="today-chip">
+        <mat-icon aria-hidden="true">calendar_today</mat-icon>
+        <span>{{ today }}</span>
+      </div>
+    </section>
+
+    <section class="summary-grid" aria-label="Dashboard summary">
+      <app-dashboard-stat-card
+        label="Forecast days"
+        icon="wb_sunny"
+        tone="weather"
+        [value]="count(weather())"
+      />
+      <app-dashboard-stat-card
+        label="Total customers"
+        icon="group"
+        tone="customers"
+        [value]="count(customers())"
+      />
+      <app-dashboard-stat-card
+        label="Total products"
+        icon="inventory_2"
+        tone="products"
+        [value]="count(products())"
+      />
+    </section>
+
+    <app-weather-forecast
+      [state]="weather()"
+      (retry)="loadWeather()"
+    />
+
+    <div class="detail-grid">
+      <app-customer-list
+        [state]="customers()"
+        (retry)="loadCustomers()"
+      />
+      <app-product-list
+        [state]="products()"
+        (retry)="loadProducts()"
+      />
+    </div>
+
+    <footer class="page-footer">Dotnet Agentic POC <span>·</span> Dashboard</footer>
+  </main>
+</div>

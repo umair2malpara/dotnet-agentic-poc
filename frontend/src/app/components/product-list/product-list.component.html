@@ -1,0 +1,40 @@
+<section class="data-section detail-section" id="products" aria-labelledby="products-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">CATALOG</p>
+      <h2 id="products-title">Products</h2>
+    </div>
+    <span class="count-pill">
+      @if (state(); as current) {
+        @if (current.status === 'success') { {{ current.data.length }} }
+      }
+    </span>
+  </div>
+
+  @if (state(); as current) {
+    @if (current.status === 'loading' || current.status === 'error') {
+      <app-dataset-status
+        [status]="current.status"
+        [loadingMessage]="'Loading products…'"
+        [errorMessage]="current.status === 'error' ? current.message : ''"
+        [compact]="true"
+        (retry)="retry.emit()"
+      />
+    } @else if (current.data.length === 0) {
+      <div class="state-card compact-state">No products found.</div>
+    } @else {
+      <div class="record-list">
+        @for (product of current.data; track product.id) {
+          <div class="record-row">
+            <div class="product-icon"><mat-icon aria-hidden="true">inventory_2</mat-icon></div>
+            <div class="record-details">
+              <span class="record-name">{{ product.name }}</span>
+              <span class="record-subtitle">Available product</span>
+            </div>
+            <span class="product-price">{{ product.price | currency }}</span>
+          </div>
+        }
+      </div>
+    }
+  }
+</section>

@@ -5,7 +5,28 @@ namespace DotnetAgenticPoc.Api.Repositories;
 
 public sealed class InMemoryProductRepository : IProductRepository
 {
-    private readonly ConcurrentDictionary<Guid, Product> products = new();
+    private readonly ConcurrentDictionary<Guid, Product> products = new(
+        new Dictionary<Guid, Product>
+        {
+            [Guid.Parse("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa")] = new()
+            {
+                Id = Guid.Parse("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"),
+                Name = "Starter Kit",
+                Price = 24.99m
+            },
+            [Guid.Parse("bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb")] = new()
+            {
+                Id = Guid.Parse("bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"),
+                Name = "Field Notebook",
+                Price = 8.50m
+            },
+            [Guid.Parse("cccccccc-cccc-4ccc-8ccc-cccccccccccc")] = new()
+            {
+                Id = Guid.Parse("cccccccc-cccc-4ccc-8ccc-cccccccccccc"),
+                Name = "Desk Lamp",
+                Price = 42.00m
+            }
+        });
 
     public Task<IReadOnlyCollection<Product>> GetAllAsync(
         CancellationToken cancellationToken)

@@ -1,0 +1,136 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.data-section {
+  margin-bottom: 28px;
+  scroll-margin-top: 94px;
+}
+
+.detail-section {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #edf0f4;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px #1a2c4c06;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 15px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #939cac;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+h2 {
+  margin: 0;
+  color: #17243c;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.count-pill {
+  display: grid;
+  min-width: 26px;
+  height: 26px;
+  place-items: center;
+  padding: 0 7px;
+  border-radius: 8px;
+  background: #f1f3f7;
+  color: #737e90;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.record-list {
+  display: grid;
+}
+
+.record-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid #f0f2f5;
+}
+
+.product-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 11px;
+  background: #fff3e8;
+  color: #d98743;
+}
+
+.product-icon mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.record-details {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.record-name,
+.record-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-name {
+  color: #26344c;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.record-subtitle {
+  color: #929bab;
+  font-size: 10px;
+}
+
+.product-price {
+  margin-left: auto;
+  color: #26344c;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.state-card {
+  display: flex;
+  min-height: 90px;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  border: 1px dashed #dfe4eb;
+  border-radius: 11px;
+  color: #8490a1;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .detail-section {
+    padding: 16px;
+  }
+}

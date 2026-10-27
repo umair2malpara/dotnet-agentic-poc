@@ -1,0 +1,14 @@
+@if (status() === 'loading') {
+  <div class="state-card" [class.compact-state]="compact()" role="status">
+    <mat-spinner [diameter]="compact() ? 24 : 28"></mat-spinner>
+    <span>{{ loadingMessage() }}</span>
+  </div>
+} @else {
+  <div class="state-card error-state" [class.compact-state]="compact()" role="alert">
+    <mat-icon aria-hidden="true">cloud_off</mat-icon>
+    <span>{{ errorMessage() }}</span>
+    <button mat-stroked-button type="button" (click)="retry.emit()">
+      {{ compact() ? 'Retry' : 'Try again' }}
+    </button>
+  </div>
+}
