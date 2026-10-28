@@ -56,6 +56,76 @@ Service Lifetimes:
 
 Never instantiate dependencies using "new" when dependency injection should be used.
 
+## SOLID Principles
+
+Follow SOLID principles throughout the codebase.
+
+### Single Responsibility Principle (SRP)
+
+Each class, service, component, repository, and module should have one primary responsibility and one reason to change.
+
+Examples:
+
+- Controllers should handle HTTP concerns only.
+- Services should contain business logic only.
+- Repositories should contain data access logic only.
+- Angular Components should focus on UI rendering and user interaction.
+- Angular Services should contain API communication and business logic.
+
+Avoid large classes or components that combine multiple responsibilities.
+
+When a class or component becomes difficult to understand or maintain due to multiple responsibilities, consider splitting it into smaller focused units.
+
+### Open/Closed Principle
+
+Software entities should be open for extension but closed for modification where practical.
+
+### Liskov Substitution Principle
+
+Derived implementations should be safely substitutable for their base abstractions.
+
+### Interface Segregation Principle
+
+Prefer smaller focused interfaces over large general-purpose interfaces.
+
+### Dependency Inversion Principle
+
+Depend on abstractions rather than concrete implementations whenever appropriate.
+
+## DRY (Don't Repeat Yourself) Standards
+
+Avoid duplicating business logic, validation logic, configuration, constants, and implementation patterns.
+
+Before creating new code:
+
+- Search for existing implementations.
+- Reuse existing services, repositories, components, utilities, and helpers where appropriate.
+- Centralize shared logic.
+- Extract reusable functionality when duplication is identified.
+
+Examples:
+
+- Reuse Angular shared components instead of duplicating UI implementations.
+- Reuse existing services before creating new services.
+- Centralize validation rules when shared across multiple features.
+- Centralize API communication logic.
+- Reuse DTOs and models when appropriate.
+
+Avoid copy-paste implementations.
+
+If similar logic exists in multiple locations, prefer refactoring into a reusable abstraction.
+
+## Backend Maintainability Standards
+
+- Follow Single Responsibility Principle.
+- Keep controllers focused on HTTP concerns.
+- Keep services focused on a specific business capability.
+- Keep repositories focused exclusively on data access.
+- Avoid God Classes and overly complex services.
+- Extract reusable logic into shared services or helper classes when appropriate.
+- Avoid duplicated validation, mapping, or business rules.
+
+
 ## .NET API Design Standards
 
 - Use API Versioning when introducing breaking API contract changes.
@@ -218,6 +288,15 @@ Guidelines:
 - Store configuration in Angular environment files where appropriate.
 
 ---
+
+## Angular Maintainability Standards
+
+- Follow Single Responsibility Principle for components and services.
+- Keep components focused and lightweight.
+- Prefer reusable shared components over duplicated UI implementations.
+- Extract repeated logic into shared services, utilities, directives, or pipes.
+- Avoid duplicate RxJS pipelines when shared logic can be reused.
+- Prefer composition over duplication.
 
 ## Angular Component Standards
 
@@ -511,6 +590,21 @@ Issue #28 - Add product search endpoint
 
 Never commit directly to main.
 Always use feature branches.
+
+## Code Reuse Standards
+
+Before generating new code, AI agents must:
+
+1. Search for existing implementations.
+2. Search for similar services.
+3. Search for reusable Angular components.
+4. Search for reusable repositories.
+5. Search for reusable DTOs and models.
+6. Search for existing validation logic.
+
+Prefer extending existing implementations over creating duplicate functionality.
+
+New classes, components, services, or repositories should only be created when an appropriate reusable implementation does not already exist.
 
 ## AI Agent Responsibilities
 
