@@ -7,7 +7,7 @@ describe('ProductsComponent', () => {
     fixture.detectChanges();
 
     const element = fixture.nativeElement as HTMLElement;
-    expect(element.querySelector('h1')?.textContent).toContain('Products');
+    expect(element.querySelector('h1')).toBeNull();
     expect(element.textContent).toContain('Product management is under development.');
     expect(element.querySelector('button, form, input')).toBeNull();
   });

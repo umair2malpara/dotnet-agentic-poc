@@ -1,74 +1,152 @@
-<header class="topbar">
-  <a
-    class="brand"
-    routerLink="/dashboard"
-    aria-label="Dotnet Agentic POC home"
-    (click)="closeMobileNavigation()"
-  >
-    <span class="brand-mark" aria-hidden="true">D</span>
-    <span>Dotnet Agentic POC</span>
-  </a>
-  <span class="topbar-caption">Operations dashboard</span>
-  <button
-    #menuButton
-    class="menu-toggle"
-    type="button"
-    aria-controls="feature-navigation"
-    [attr.aria-expanded]="mobileNavigationOpen()"
-    [attr.aria-label]="mobileNavigationOpen() ? 'Close navigation' : 'Open navigation'"
-    (click)="toggleMobileNavigation()"
-    (keydown.escape)="closeMobileNavigation()"
-  >
-    <span class="menu-icon" [class.close-icon]="mobileNavigationOpen()" aria-hidden="true">
-      <span></span>
-      <span></span>
-      <span></span>
-    </span>
-  </button>
-</header>
+<div class="shell" [class.sidebar-collapsed]="desktopNavigationCollapsed()">
+  <header class="topbar">
+    <a
+      class="brand"
+      routerLink="/dashboard"
+      aria-label="Dotnet Agentic POC home"
+      (click)="closeMobileNavigation()"
+    >
+      <span class="brand-mark" aria-hidden="true">D</span>
+      <span>Dotnet Agentic POC</span>
+    </a>
+    <button
+      class="desktop-navigation-toggle"
+      type="button"
+      aria-controls="feature-navigation"
+      [attr.aria-expanded]="!desktopNavigationCollapsed()"
+      [attr.aria-label]="desktopNavigationCollapsed() ? 'Expand navigation' : 'Collapse navigation'"
+      (click)="toggleDesktopNavigation()"
+    >
+      <span aria-hidden="true">☰</span>
+    </button>
+    <span class="topbar-caption">Operations dashboard</span>
+    <button
+      #menuButton
+      class="menu-toggle"
+      type="button"
+      aria-controls="feature-navigation"
+      [attr.aria-expanded]="mobileNavigationOpen()"
+      [attr.aria-label]="mobileNavigationOpen() ? 'Close navigation' : 'Open navigation'"
+      (click)="toggleMobileNavigation()"
+      (keydown.escape)="closeMobileNavigation()"
+    >
+      <span class="menu-icon" [class.close-icon]="mobileNavigationOpen()" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </header>
 
-<div class="layout">
-  <aside
-    id="feature-navigation"
-    class="sidebar"
-    [class.mobile-open]="mobileNavigationOpen()"
-    aria-label="Feature navigation"
-    (keydown)="onNavigationKeydown($event)"
-  >
-    <p class="nav-label">Workspace</p>
-    <nav aria-label="Features">
-      <a
-        class="nav-link"
-        routerLink="/customers"
-        routerLinkActive="active"
-        ariaCurrentWhenActive="page"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="closeMobileNavigation()"
-      >
-        <span>Customers</span>
-      </a>
-      <a
-        class="nav-link"
-        routerLink="/products"
-        routerLinkActive="active"
-        ariaCurrentWhenActive="page"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="closeMobileNavigation()"
-      >
-        <span>Products</span>
-      </a>
-    </nav>
-  </aside>
+  <div class="layout" [class.navigation-collapsed]="desktopNavigationCollapsed()">
+    <aside
+      id="feature-navigation"
+      class="sidebar"
+      [class.mobile-open]="mobileNavigationOpen()"
+      aria-label="Feature navigation"
+      (keydown)="onNavigationKeydown($event)"
+    >
+      <p class="nav-label">Workspace</p>
+      <nav aria-label="Features">
+        <a
+          class="nav-link"
+          routerLink="/customers"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: false }"
+          (click)="closeMobileNavigation()"
+        >
+          <span>Customers</span>
+        </a>
+        <a
+          class="nav-link"
+          routerLink="/products"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMobileNavigation()"
+        >
+          <span>Products</span>
+        </a>
+      </nav>
+    </aside>
 
-  <main class="content">
-    <nav class="breadcrumbs" aria-label="Breadcrumb">
-      <ol>
-        <li><a routerLink="/dashboard">Home</a></li>
-        <li>
-          <span aria-current="page" aria-live="polite">{{ breadcrumb() }}</span>
-        </li>
-      </ol>
-    </nav>
-    <router-outlet (activate)="onPageActivated()" />
-  </main>
+    <main class="content">
+      @if (pageContextVisible()) {
+        <section class="page-context" aria-label="Current page">
+          <div id="page-context-content" class="page-context-content">
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <ol>
+                <li><a routerLink="/dashboard">Home</a></li>
+                @for (item of breadcrumbs(); track item.url; let last = $last) {
+                  <li>
+                    @if (last) {
+                      <span aria-current="page" aria-live="polite">{{ item.label }}</span>
+                    } @else {
+                      <a [routerLink]="item.url">{{ item.label }}</a>
+                    }
+                  </li>
+                }
+              </ol>
+            </nav>
+            <div class="page-context-heading">
+              <h1 id="page-title" class="page-context-title">
+                {{ pageContext().title }}
+              </h1>
+
+              @if (pageContext().description) {
+                <p class="page-context-description">
+                  {{ pageContext().description }}
+                </p>
+              }
+            </div>
+          </div>
+          <button
+            class="context-hide-toggle"
+            type="button"
+            aria-label="Hide page context bar"
+            (click)="hidePageContext()"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2.8 12s3.2-6 9.2-6a9.9 9.9 0 0 1 5.2 1.5" />
+              <path d="M21.2 12s-3.2 6-9.2 6a9.9 9.9 0 0 1-5.2-1.5" />
+              <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+              <path d="m3 3 18 18" />
+            </svg>
+          </button>
+        </section>
+      } @else {
+        <button
+          class="context-restore-toggle"
+          type="button"
+          aria-label="Show page context bar"
+          (click)="showPageContext()"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.8 12s3.2-6 9.2-6 9.2 6 9.2 6-3.2 6-9.2 6-9.2-6-9.2-6Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </button>
+      }
+      <router-outlet (activate)="onPageActivated()" />
+    </main>
+  </div>
+
+  @if (notifications.notification(); as notification) {
+    <div
+      class="toast"
+      [class.toast-success]="notification.kind === 'success'"
+      [class.toast-warning]="notification.kind === 'warning'"
+      [class.toast-error]="notification.kind === 'error'"
+      [attr.role]="notification.kind === 'success' ? 'status' : 'alert'"
+      [attr.aria-live]="notification.kind === 'success' ? 'polite' : 'assertive'"
+      aria-atomic="true"
+    >
+      <p>{{ notification.message }}</p>
+      <button type="button" aria-label="Dismiss notification" (click)="notifications.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  }
+  <app-confirmation-dialog />
 </div>

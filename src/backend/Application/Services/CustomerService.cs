@@ -32,4 +32,9 @@ public sealed class CustomerService(
         Guid id,
         CancellationToken cancellationToken) =>
         customerRepository.DeleteAsync(id, cancellationToken);
+
+    public Task<bool> DeleteManyAsync(
+        IReadOnlyCollection<Guid> ids,
+        CancellationToken cancellationToken) =>
+        customerRepository.DeleteManyAsync(ids, cancellationToken);
 }

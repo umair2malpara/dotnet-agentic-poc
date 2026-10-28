@@ -1,0 +1,97 @@
+.confirmation-dialog {
+  width: min(460px, calc(100vw - 32px));
+  max-width: none;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 18px;
+  background: #fff;
+  color: #17243c;
+  box-shadow: 0 24px 80px rgb(20 33 61 / 26%);
+}
+
+.confirmation-dialog::backdrop {
+  background: rgb(15 23 42 / 54%);
+  backdrop-filter: blur(3px);
+}
+
+.dialog-content {
+  padding: 28px;
+}
+
+.dialog-mark {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 15px;
+  background: #eef2ff;
+  color: #3157d5;
+  font-size: 24px;
+  font-weight: 750;
+}
+
+.dialog-mark.danger {
+  background: #fff0ef;
+  color: #a53030;
+}
+
+h2 {
+  margin: 0;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 10px 0 24px;
+  color: #586477;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+button {
+  min-height: 44px;
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.cancel-button {
+  border-color: #cbd5e1;
+  background: #fff;
+  color: #233554;
+}
+
+.confirm-button {
+  background: #3156a6;
+  color: #fff;
+}
+
+.confirm-button.danger {
+  background: #a53030;
+}
+
+button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+@media (max-width: 420px) {
+  .dialog-content {
+    padding: 22px;
+  }
+
+  .dialog-actions > button {
+    flex: 1;
+  }
+}

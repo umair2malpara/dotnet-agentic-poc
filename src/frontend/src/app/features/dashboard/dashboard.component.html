@@ -1,15 +1,10 @@
-<section class="dashboard-page" aria-labelledby="dashboard-title">
-  <section class="page-heading">
-    <div>
-      <p class="eyebrow">WORKSPACE / OVERVIEW</p>
-      <h1 id="dashboard-title">Dashboard</h1>
-      <p class="subtitle">A snapshot of your weather, customers, and products.</p>
-    </div>
+<section class="dashboard-page" aria-label="Dashboard overview">
+  <div class="dashboard-meta">
     <div class="today-chip">
       <mat-icon aria-hidden="true">calendar_today</mat-icon>
       <span>{{ today }}</span>
     </div>
-  </section>
+  </div>
 
   <section class="summary-grid" aria-label="Dashboard summary">
     <app-dashboard-stat-card

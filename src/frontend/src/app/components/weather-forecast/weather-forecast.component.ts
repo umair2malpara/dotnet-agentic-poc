@@ -3,7 +3,8 @@ import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { DatasetState, WeatherForecast } from '../../core/models/api.models';
+import { DatasetState } from '../../core/models/dataset-state.model';
+import { WeatherForecast } from '../../core/models/weather-forecast.model';
 import { DatasetStatusComponent } from '../dataset-status/dataset-status.component';
 
 @Component({

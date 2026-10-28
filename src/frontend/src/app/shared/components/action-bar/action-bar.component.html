@@ -1,0 +1,32 @@
+@if (visible()) {
+  <div class="action-bar-shell">
+    <div id="page-action-items" class="action-bar" role="toolbar" aria-label="Page actions">
+      @for (action of actions(); track action.id) {
+        <button
+          type="{{ action.type ?? 'button' }}"
+          [attr.form]="action.form ?? null"
+          [class.primary]="action.variant === 'primary'"
+          [class.secondary]="action.variant === 'secondary'"
+          [class.danger]="action.variant === 'danger'"
+          [disabled]="action.disabled"
+          [attr.aria-busy]="action.busy ? 'true' : null"
+          (click)="action.onClick?.()"
+        >
+          {{ action.label }}
+        </button>
+      }
+      <button class="bar-hide-toggle" type="button" aria-label="Hide action bar" (click)="hide()">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M2.8 12s3.2-6 9.2-6a9.9 9.9 0 0 1 5.2 1.5" />
+          <path d="M21.2 12s-3.2 6-9.2 6a9.9 9.9 0 0 1-5.2-1.5" />
+          <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+          <path d="m3 3 18 18" />
+        </svg>
+      </button>
+    </div>
+  </div>
+} @else {
+  <button class="action-bar-restore" type="button" aria-label="Show actions" (click)="show()">
+    Show actions
+  </button>
+}

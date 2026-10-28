@@ -1,4 +1,70 @@
-<section class="placeholder-page" aria-labelledby="customers-title">
-  <h1 id="customers-title">Customers</h1>
-  <p>Customer management is under development.</p>
+<section class="customers-page" aria-label="Customer list">
+  @if (deleteError(); as message) {
+    <div class="operation-error" role="alert">
+      <p>{{ message }}</p>
+      <button class="secondary-button" type="button" (click)="loadCustomers()">Refresh list</button>
+    </div>
+  }
+
+  @if (customers(); as state) {
+    @if (state.status === 'loading') {
+      <p class="state-message" role="status">Loading customers…</p>
+    } @else if (state.status === 'error') {
+      <div class="state-message error-state" role="alert">
+        <p>{{ state.message }}</p>
+        <button class="secondary-button" type="button" (click)="loadCustomers()">Retry</button>
+      </div>
+    } @else if (state.data.length === 0) {
+      <p class="state-message" role="status">No customers found. Add a customer to get started.</p>
+    } @else {
+      <div class="table-toolbar" role="group" aria-label="Customer actions">
+        <p aria-live="polite">
+          {{ selectedCount() }} selected of {{ state.data.length }} customers
+        </p>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <caption class="visually-hidden">
+            Customer names and email addresses
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col" class="selection-column">
+                <input
+                  type="checkbox"
+                  aria-label="Select all customers"
+                  [checked]="allSelected()"
+                  [indeterminate]="selectedCount() > 0 && !allSelected()"
+                  (change)="onSelectAllChange($event)"
+                />
+              </th>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (customer of state.data; track customer.id) {
+              <tr [class.selected-row]="isSelected(customer.id)">
+                <td class="selection-column">
+                  <input
+                    type="checkbox"
+                    [attr.aria-label]="'Select ' + customer.name"
+                    [checked]="isSelected(customer.id)"
+                    (change)="onCustomerSelectionChange(customer.id, $event)"
+                  />
+                </td>
+                <th scope="row">{{ customer.name }}</th>
+                <td>
+                  <a [href]="'mailto:' + customer.email">{{ customer.email }}</a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
 </section>
+
+<app-action-bar [actions]="actionBarActions" />

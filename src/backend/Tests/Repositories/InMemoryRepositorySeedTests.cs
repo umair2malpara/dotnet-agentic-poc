@@ -6,18 +6,21 @@ namespace DotnetAgenticPoc.Api.Tests.Repositories;
 public sealed class InMemoryRepositorySeedTests
 {
     [Fact]
-    public async Task CustomerRepository_StartsWithThreeFictionalCustomers()
+    public async Task CustomerRepository_StartsWithTwentyFictionalCustomers()
     {
         var repository = new InMemoryCustomerRepository();
 
         var customers = await repository.GetAllAsync(CancellationToken.None);
 
-        Assert.Equal(3, customers.Count);
+        Assert.Equal(20, customers.Count);
         Assert.All(customers, customer =>
         {
             Assert.False(string.IsNullOrWhiteSpace(customer.Name));
             Assert.EndsWith("@example.test", customer.Email);
         });
+        Assert.Contains(customers, customer => customer.Name == "Alex Morgan");
+        Assert.Contains(customers, customer => customer.Name == "Jamie Lee");
+        Assert.Contains(customers, customer => customer.Name == "Taylor Rivera");
     }
 
     [Fact]

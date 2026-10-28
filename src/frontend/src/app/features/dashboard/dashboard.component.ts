@@ -1,19 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
-import {
-  Customer,
-  DatasetState,
-  Product,
-  WeatherForecast,
-} from '../../core/models/api.models';
+import { Customer } from '../../core/models/customer.model';
+import { DatasetState } from '../../core/models/dataset-state.model';
+import { Product } from '../../core/models/product.model';
+import { WeatherForecast } from '../../core/models/weather-forecast.model';
 import {
   CustomerListComponent,
   DashboardStatCardComponent,
   ProductListComponent,
   WeatherForecastComponent,
 } from '../../components';
-import { DashboardApiService } from '../../core/services/dashboard-api.service';
+import { CustomerApiService } from '../../core/services/customer-api.service';
+import { ProductApiService } from '../../core/services/product-api.service';
+import { WeatherForecastApiService } from '../../core/services/weather-forecast-api.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,7 +28,9 @@ import { DashboardApiService } from '../../core/services/dashboard-api.service';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
-  private readonly api = inject(DashboardApiService);
+  private readonly customerApi = inject(CustomerApiService);
+  private readonly productApi = inject(ProductApiService);
+  private readonly weatherApi = inject(WeatherForecastApiService);
   protected readonly today = new Intl.DateTimeFormat('en', {
     dateStyle: 'full',
   }).format(new Date());
@@ -49,15 +51,15 @@ export class DashboardComponent {
   }
 
   protected loadWeather(): void {
-    this.loadDataset(this.api.getWeatherForecasts(), this.weather);
+    this.loadDataset(this.weatherApi.getWeatherForecasts(), this.weather);
   }
 
   protected loadCustomers(): void {
-    this.loadDataset(this.api.getCustomers(), this.customers);
+    this.loadDataset(this.customerApi.getCustomers(), this.customers);
   }
 
   protected loadProducts(): void {
-    this.loadDataset(this.api.getProducts(), this.products);
+    this.loadDataset(this.productApi.getProducts(), this.products);
   }
 
   protected count<T>(state: DatasetState<T>): string {

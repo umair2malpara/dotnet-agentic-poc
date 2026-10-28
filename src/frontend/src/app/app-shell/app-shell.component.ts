@@ -2,33 +2,64 @@ import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core'
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { NotificationService } from '../core/services/notification.service';
+
+interface BreadcrumbItem {
+  readonly label: string;
+  readonly url: string;
+}
+
+interface PageContext {
+  readonly title: string;
+  readonly description: string;
+}
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [ConfirmationDialogComponent, RouterLink, RouterLinkActive, RouterOutlet],
   styleUrl: './app-shell.component.scss',
   templateUrl: './app-shell.component.html',
 })
 export class AppShellComponent {
   private readonly router = inject(Router);
+  protected readonly notifications = inject(NotificationService);
 
   @ViewChild('menuButton') private menuButton?: ElementRef<HTMLButtonElement>;
 
-  protected readonly breadcrumb = signal('Dashboard');
+  protected readonly breadcrumbs = signal<BreadcrumbItem[]>([]);
+  protected readonly pageContext = signal<PageContext>({
+    title: 'Dashboard',
+    description: 'A snapshot of your weather, customers, and products.',
+  });
+  protected readonly pageContextVisible = signal(true);
   protected readonly mobileNavigationOpen = signal(false);
+  protected readonly desktopNavigationCollapsed = signal(false);
+
+  protected hidePageContext(): void {
+    this.pageContextVisible.set(false);
+  }
+
+  protected showPageContext(): void {
+    this.pageContextVisible.set(true);
+  }
 
   constructor() {
-    this.updateBreadcrumb();
+    this.updateBreadcrumbs();
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(),
       )
-      .subscribe(() => this.updateBreadcrumb());
+      .subscribe(() => this.updateBreadcrumbs());
   }
 
   protected toggleMobileNavigation(): void {
     this.mobileNavigationOpen.update((open) => !open);
+  }
+
+  protected toggleDesktopNavigation(): void {
+    this.desktopNavigationCollapsed.update((collapsed) => !collapsed);
   }
 
   protected closeMobileNavigation(): void {
@@ -51,13 +82,42 @@ export class AppShellComponent {
     this.mobileNavigationOpen.set(false);
   }
 
-  private updateBreadcrumb(): void {
+  private updateBreadcrumbs(): void {
+    const items: BreadcrumbItem[] = [];
+    const segments: string[] = [];
+    let title: string | null = null;
+    let description: string | null = null;
     let activeRoute = this.router.routerState.snapshot.root;
-    while (activeRoute.firstChild) {
+
+    while (activeRoute) {
+      segments.push(...activeRoute.url.map((segment) => segment.path));
+      const label = activeRoute.data['breadcrumb'];
+      const routeTitle = activeRoute.data['pageTitle'];
+      const routeDescription = activeRoute.data['pageDescription'];
+      if (typeof routeTitle === 'string') {
+        title = routeTitle;
+      }
+      if (typeof routeDescription === 'string') {
+        description = routeDescription;
+      }
+      if (typeof label === 'string') {
+        const url = `/${segments.join('/')}`;
+        const lastItem = items.at(-1);
+        if (lastItem?.label !== label || lastItem.url !== url) {
+          items.push({ label, url });
+        }
+      }
+
+      if (!activeRoute.firstChild) {
+        break;
+      }
       activeRoute = activeRoute.firstChild;
     }
 
-    const label = activeRoute.data['breadcrumb'];
-    this.breadcrumb.set(typeof label === 'string' ? label : 'Dashboard');
+    this.breadcrumbs.set(items);
+    this.pageContext.set({
+      title: title ?? items.at(-1)?.label ?? 'Home',
+      description: description ?? '',
+    });
   }
 }

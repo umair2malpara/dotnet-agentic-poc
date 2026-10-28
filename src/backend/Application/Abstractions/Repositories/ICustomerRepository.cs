@@ -13,4 +13,8 @@ public interface ICustomerRepository
     Task<bool> UpdateAsync(Customer customer, CancellationToken cancellationToken);
 
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
+
+    Task<bool> DeleteManyAsync(
+        IReadOnlyCollection<Guid> ids,
+        CancellationToken cancellationToken);
 }

@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
 import { AppShellComponent } from './app-shell/app-shell.component';
+import { customerRoutes } from './features/customers/customers.routes';
+import { dashboardRoutes } from './features/dashboard/dashboard.routes';
+import { productRoutes } from './features/products/products.routes';
 
 export const appRoutes: Routes = [
   {
@@ -11,30 +14,9 @@ export const appRoutes: Routes = [
         pathMatch: 'full',
         redirectTo: 'dashboard',
       },
-      {
-        path: 'dashboard',
-        data: { breadcrumb: 'Dashboard' },
-        loadComponent: () =>
-          import('./features/dashboard/dashboard.component').then(
-            (module) => module.DashboardComponent,
-          ),
-      },
-      {
-        path: 'customers',
-        data: { breadcrumb: 'Customers' },
-        loadComponent: () =>
-          import('./features/customers/customers.component').then(
-            (module) => module.CustomersComponent,
-          ),
-      },
-      {
-        path: 'products',
-        data: { breadcrumb: 'Products' },
-        loadComponent: () =>
-          import('./features/products/products.component').then(
-            (module) => module.ProductsComponent,
-          ),
-      },
+      ...dashboardRoutes,
+      ...customerRoutes,
+      ...productRoutes,
       {
         path: '**',
         redirectTo: 'dashboard',
