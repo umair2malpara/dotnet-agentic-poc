@@ -94,6 +94,32 @@ Jira is the primary source of truth.
 
 ---
 
+## Repository Standards Compliance
+
+Before performing any analysis, review:
+
+.github/copilot-instructions.md
+
+Treat copilot-instructions.md as the authoritative source for:
+
+- Architecture standards
+- Coding standards
+- Security standards
+- Testing standards
+- Angular standards
+- .NET standards
+- Workflow standards
+- Git standards
+- AI agent standards
+
+All discovery findings and specifications must align with these standards.
+
+If existing source code conflicts with copilot-instructions.md:
+
+- Identify the conflict.
+- Document the conflict.
+- Do not silently ignore it.
+
 ## Inputs
 
 Read and analyze:
