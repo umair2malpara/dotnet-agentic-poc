@@ -28,7 +28,6 @@ This agent is responsible for:
 - Branch creation
 - Environment validation
 - Dependency validation
-- Build validation
 - Development readiness verification
 
 No code modifications should occur during this stage.
@@ -184,6 +183,23 @@ If repository contains unexpected pending changes:
 Highlight them.
 
 Require explicit confirmation before continuing.
+
+---
+
+## Branch Safety Validation
+
+Verify:
+
+- Branch does not already exist remotely.
+- Branch name follows repository conventions.
+- Branch is created from latest main.
+
+Prevent accidental development on:
+
+- main
+- master
+- release
+- production
 
 ---
 
@@ -349,89 +365,16 @@ Do not create secrets.
 
 ---
 
-## Build Validation
+## Specification Validation
 
-Validate current baseline before development begins.
+Verify required specification artifacts exist:
 
----
+- Functional Specification
+- Technical Specification
+- BDD Specification
+- Traceability Matrix
 
-### Backend Validation
-
-Run:
-
-dotnet build
-
-Verify:
-
-- Build succeeds
-- No blocking errors
-
-Record warnings.
-
----
-
-### Backend Test Validation
-
-Run:
-
-dotnet test
-
-Verify:
-
-- Existing tests pass
-- Baseline state is healthy
-
-Record failures.
-
----
-
-### Frontend Validation
-
-If Angular exists:
-
-Run:
-
-npm run build
-
-Verify:
-
-- Angular build succeeds
-
-Record warnings.
-
----
-
-### Frontend Tests
-
-If Angular tests exist:
-
-Run:
-
-npm test
-
-Verify:
-
-- Existing tests pass
-
-Record failures.
-
----
-
-## Development Scope Validation
-
-Cross-reference:
-
-Functional Requirements
-
-Technical Specification
-
-BDD Specifications
-
-Verify:
-
-- Every requirement has implementation scope.
-- Every requirement has test coverage.
-- No specification sections are missing.
+Verify all artifacts are approved and ready for implementation.
 
 ---
 
@@ -463,17 +406,11 @@ Branch Naming Validation
 
 ### Environment Validation Results
 
-Git Status
-
 .NET Restore Status
-
-.NET Build Status
 
 Angular Restore Status
 
-Angular Build Status
-
-Test Baseline Status
+Configuration Validation Status
 
 ---
 
@@ -499,8 +436,6 @@ Dependency Risks
 
 Configuration Risks
 
-Build Risks
-
 ---
 
 ### Outstanding Blockers
@@ -523,13 +458,9 @@ Generate:
 
 ### Environment Status
 
-### Build Validation Status
+### Specification Validation Status
 
-### Test Validation Status
-
-### Risks
-
-### Blockers
+### Development Readiness
 
 ### Development Readiness
 
@@ -550,9 +481,28 @@ Setup is complete only when:
 - Repository synchronized.
 - Feature branch created.
 - Dependencies restored.
-- Baseline build succeeds.
-- Baseline tests pass or failures documented.
+- Environment validated.
 - Development Readiness status generated.
+
+---
+
+## Setup Efficiency
+
+Do not perform:
+
+- Solution builds
+- Unit test execution
+- Integration test execution
+- Frontend build execution
+- Frontend test execution
+
+These activities belong to:
+
+#develop
+
+and GitHub Actions workflows.
+
+Setup should focus exclusively on development readiness.
 
 ---
 
@@ -569,7 +519,7 @@ Include:
 - Approved Specifications
 - Impacted Areas
 - Risks
-- Validation Results
+- Environment Validation Results
 
 Do not modify code.
 

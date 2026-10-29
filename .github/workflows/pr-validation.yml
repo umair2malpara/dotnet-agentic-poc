@@ -3,6 +3,10 @@ name: PR Validation
 on:
   pull_request:
 
+concurrency:
+  group: pr-validation-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -11,4 +15,5 @@ jobs:
     uses: ./.github/workflows/build.yml
 
   test:
+    needs: build
     uses: ./.github/workflows/test.yml

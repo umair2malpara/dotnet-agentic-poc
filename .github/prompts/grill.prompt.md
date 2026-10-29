@@ -156,21 +156,18 @@ If existing source code conflicts with copilot-instructions.md:
 - Document the conflict.
 - Do not silently ignore it.
 
-## Existing Solution Analysis
+## Existing Solution Awareness
 
-Before asking questions:
+Review relevant source code only when necessary to:
 
-1. Read impacted source code.
-2. Read relevant APIs.
-3. Read relevant Angular components.
-4. Read Services.
-5. Read Repositories.
-6. Read Models and DTOs.
-7. Read relevant documentation.
-8. Read copilot-instructions.md.
-9. Inspect existing implementation patterns.
+- Understand current behavior.
+- Understand existing workflows.
+- Understand user impact.
+- Avoid asking questions already answerable from the repository.
 
-Do not ask the user questions that can be answered from available sources.
+Do not let the current implementation constrain requirement discovery.
+
+Business requirements take precedence over existing implementation details.
 
 ---
 
@@ -299,11 +296,11 @@ Actively search for missing information regarding:
 - User actions
 - Data requirements
 
-### API Requirements
+### Integration Requirements
 
-- Request expectations
-- Response expectations
-- Validation requirements
+- External systems involved
+- Data exchange requirements
+- User expectations
 
 ### UI Requirements
 
@@ -337,6 +334,62 @@ Actively search for missing information regarding:
 
 ---
 
+## Requirement Discovery Principles
+
+Focus on:
+
+- What problem needs solving
+- Who is impacted
+- Why the change is needed
+- How success will be measured
+
+Avoid discussing:
+
+- How the solution will be implemented
+- Technology choices
+- Database design
+- API design
+- Class design
+- Framework selection
+
+These belong in #spec.
+
+---
+
+## Existing Requirement Reuse
+
+Before generating discovery questions:
+
+Determine whether:
+
+- Similar functionality already exists.
+- Existing functionality may be impacted.
+- Similar Jira tickets exist.
+- Similar GitHub issues exist.
+- Similar specifications already exist.
+- Existing APIs already solve part of the requirement.
+
+Reuse existing business concepts whenever possible.
+
+Avoid rediscovering requirements that already exist elsewhere in the repository.
+
+---
+
+## Discovery Efficiency
+
+Prefer the minimum number of questions required to remove meaningful ambiguity.
+
+Do not ask questions when:
+
+- The answer is already available from Jira.
+- The answer is already available from GitHub.
+- The answer is already available from repository documentation.
+- The answer will not materially change implementation, testing, architecture, or user experience.
+
+Do not create artificial discovery work where no ambiguity exists.
+
+---
+
 ## Question Rules
 
 Every question must:
@@ -345,7 +398,8 @@ Every question must:
 - Be specific.
 - Avoid assumptions.
 - Include context.
-- Include a recommended answer.
+- Include a recommended answer only when a clearly preferred option exists based on available information.
+- Do not bias the user when the correct answer is unknown.
 - Be phrased so that "Yes" accepts the recommendation.
 
 Questions must be grouped by frontier.
@@ -378,20 +432,14 @@ Continue until all frontier questions are answered.
 
 ## Discovery Completion Criteria
 
-Requirement discovery is not complete until:
+Requirement discovery is complete when:
 
+- Business goals are understood.
 - Functional requirements are understood.
-- Non-functional requirements are understood.
-- Security requirements are understood.
-- Validation requirements are understood.
-- Error handling requirements are understood.
-- User journeys are understood.
 - Acceptance criteria are clear.
-- Out-of-scope items are identified.
-- Risks are documented.
-- Assumptions are documented.
+- Key risks are identified.
 - Open questions are resolved.
-- User confirms shared understanding.
+- Shared understanding is achieved.
 
 Do not proceed to specification creation until all completion criteria are satisfied.
 
@@ -416,14 +464,6 @@ When discovery is complete generate:
 ### User Journeys
 
 ### Acceptance Criteria
-
-### Validation Requirements
-
-### Security Requirements
-
-### Performance Requirements
-
-### Error Handling Requirements
 
 ### Explicit Decisions
 

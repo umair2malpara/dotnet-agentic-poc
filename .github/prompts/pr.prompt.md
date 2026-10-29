@@ -26,8 +26,8 @@ Responsibilities:
 
 - Validate commit stage completion.
 - Validate feature branch status.
-- Validate build results.
-- Validate test results.
+- Verify approved build results.
+- Verify approved test results.
 - Validate review approval.
 - Generate Pull Request title.
 - Generate Pull Request description.
@@ -146,8 +146,8 @@ Verify:
 - Commit created
 - Commit pushed
 - Feature branch synchronized with main
-- Build passed
-- Tests passed
+- Approved build results available
+- Approved test results available
 
 ---
 
@@ -162,6 +162,59 @@ Verify:
 
 ---
 
+## Pull Request Efficiency
+
+Consume approved results from:
+
+- Development Report
+- Review Report
+- Commit Report
+
+Do not re-run:
+
+- dotnet build
+- dotnet test
+- npm run build
+- npm test
+
+The Pull Request phase validates readiness rather than re-executing development activities.
+
+---
+
+## Final Scope Validation
+
+Verify:
+
+- Pull Request contents remain within approved scope.
+- No unrelated functionality is included.
+- No unauthorized scope expansion exists.
+- No unrelated refactoring exists.
+
+Flag any deviation before PR creation.
+
+---
+
+## Reviewer Experience
+
+Generate Pull Request content optimized for human review.
+
+Prefer:
+
+- Clear summaries
+- Grouped changes
+- Concise explanations
+- Business context
+
+Avoid:
+
+- Excessive implementation detail
+- Duplicate specification content
+- Large file-by-file narratives
+
+The Pull Request should help reviewers understand what changed and why.
+
+---
+
 ## Inputs
 
 Read and analyze:
@@ -173,8 +226,6 @@ Read and analyze:
 - Development Report
 - Review Report
 - Commit Report
-- Build Results
-- Test Results
 - Git Changes Summary
 - copilot-instructions.md
 
@@ -331,25 +382,23 @@ Example:
 
 ### Backend
 
-Controllers
+Summarize impacted backend areas:
 
-Services
+- Controllers
+- Services
+- Repositories
+- Models/DTOs
+- Middleware
+- Configuration
+- Database
 
-Repositories
-
-Models
-
-DTOs
-
-Middleware
-
-Configuration
-
-Database
+Include only areas that changed.
 
 ---
 
 ### Frontend
+
+Summarize impacted frontend areas:
 
 Angular Components
 
@@ -364,6 +413,8 @@ Angular Routes
 Angular State
 
 Shared Components
+
+Include only areas that changed.
 
 ---
 
@@ -413,25 +464,11 @@ Overall validation result.
 
 ---
 
-## Traceability
+## Traceability Summary
 
-Map:
+Highlight key requirement-to-implementation-to-test mappings.
 
-Requirement
-
-→ Implementation
-
-→ Test Coverage
-
-Examples:
-
-REQ-001
-→ CustomerController
-→ CustomerControllerTests
-
-REQ-002
-→ CustomerListComponent
-→ CustomerListComponentTests
+Reference the complete Traceability Matrix when detailed traceability is required.
 
 ---
 
@@ -493,6 +530,9 @@ Reviewers should verify:
 - Tests are adequate.
 - Build succeeds.
 - Documentation updated.
+- DRY principles followed.
+- SRP principles followed.
+- Existing patterns reused appropriately.
 
 ---
 
@@ -634,8 +674,8 @@ Pull Request stage is complete only when:
 - Review approved.
 - Commit completed.
 - Feature branch synchronized.
-- Tests passed.
-- Build passed.
+- Approved build results available.
+- Approved test results available.
 - Risks documented.
 - Rollback plan documented.
 - Reviewer checklist generated.

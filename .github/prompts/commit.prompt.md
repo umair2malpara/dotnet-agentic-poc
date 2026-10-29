@@ -30,8 +30,7 @@ Responsibilities:
 - Commit changes
 - Push feature branch
 - Synchronize with latest main branch
-- Resolve merge issues
-- Validate build and tests after synchronization
+- Identify merge conflicts
 - Produce PR readiness report
 
 ---
@@ -167,6 +166,24 @@ production
 
 ---
 
+## Commit Efficiency
+
+Consume build and test results from:
+
+- Development Report
+- Review Report
+
+Do not re-run:
+
+- dotnet build
+- dotnet test
+- npm run build
+- npm test
+
+unless merge conflict resolution or synchronization introduces new changes requiring validation.
+
+---
+
 ## Inputs
 
 Read:
@@ -246,6 +263,17 @@ Verify documentation updated when:
 - Dependencies changed
 
 ---
+
+## Scope Preservation Validation
+
+Verify:
+
+- Commit contents remain within approved implementation scope.
+- No unrelated files are included.
+- No opportunistic refactoring has been added.
+- No additional features have been introduced.
+
+Flag scope violations before commit execution.
 
 ## Step 4 - Commit Readiness Validation
 
@@ -387,19 +415,24 @@ Merge latest main into feature branch
 
 ## Step 6
 
-Handle merge conflicts
+Identify merge conflicts.
 
 If conflicts occur:
 
 Generate:
 
-Conflict Report
+- Conflict Report
+- Affected Files
+- Conflict Summary
+- Recommended Resolution Approach
 
-Affected Files
+Do not silently resolve conflicts.
 
-Recommended Resolutions
+If conflict resolution requires functional changes:
 
-Do not silently overwrite changes.
+Return to:
+
+#develop <WorkItem>
 
 ---
 
@@ -409,58 +442,21 @@ Push synchronized feature branch
 
 ---
 
-# Post-Merge Validation
-
-After synchronization:
-
----
-
-## Backend Validation
-
-Run:
-
-dotnet restore
-
-dotnet build
-
-dotnet test
+# Post-Synchronization Validation
 
 Verify:
 
-- Build succeeds
-- Tests succeed
-- No regressions introduced
+- Development report indicates build success.
+- Development report indicates test success.
+- Review report approved implementation.
+- Main branch merged successfully.
+- No merge conflicts remain.
 
----
+Only perform additional builds or tests if:
 
-## Frontend Validation
-
-If Angular exists:
-
-Run:
-
-npm install
-
-npm run build
-
-Verify:
-
-- Angular build succeeds
-- TypeScript compilation succeeds
-
----
-
-## Frontend Test Validation
-
-Run:
-
-npm test
-
-Verify:
-
-- Relevant tests pass
-
-Document failures.
+- Merge conflicts were resolved.
+- Synchronization introduced changes.
+- Existing build results can no longer be trusted.
 
 ---
 
@@ -493,13 +489,13 @@ Generate:
 
 ### Main Sync Status
 
-### Backend Build Status
+### Build Validation Status
 
-### Backend Test Status
+### Test Validation Status
 
-### Frontend Build Status
+Source:
 
-### Frontend Test Status
+Development Report
 
 ### Merge Status
 
@@ -529,9 +525,13 @@ Generate:
 
 Pass / Fail
 
+Derived from approved Development Report.
+
 ### Test Status
 
 Pass / Fail
+
+Derived from approved Development Report.
 
 ### Repository Status
 
@@ -551,12 +551,28 @@ Commit stage is complete only when:
 - Commit created.
 - Feature branch pushed.
 - Latest main merged.
-- Backend build passes.
-- Backend tests pass.
-- Frontend build passes.
-- Frontend tests pass.
+- Verified approved build results exist.
+- Verified approved test results exist.
 - Repository state clean.
 - Branch ready for PR creation.
+
+---
+
+## Synchronization Safety
+
+When merging latest main into the feature branch:
+
+- Minimize conflict resolution changes.
+- Do not introduce unrelated modifications.
+- Preserve approved implementation behavior.
+
+If conflicts require functional changes:
+
+Return to:
+
+#develop <WorkItem>
+
+for re-validation.
 
 ---
 

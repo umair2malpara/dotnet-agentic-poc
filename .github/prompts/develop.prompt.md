@@ -149,8 +149,6 @@ Feature branch exists.
 
 Environment validated.
 
-Build baseline completed.
-
 Dependency restoration successful.
 
 ---
@@ -227,6 +225,19 @@ Frontend:
 
 Document impacted areas.
 
+### Existing Pattern Analysis
+
+Identify existing patterns related to:
+
+- API implementation
+- Angular implementation
+- Logging
+- Testing
+- Validation
+- Error handling
+
+Follow established repository patterns unless a justified reason exists to deviate.
+
 ---
 
 ### Step 3 - File Impact Review
@@ -240,6 +251,27 @@ Files To Modify
 Files To Delete
 
 Before implementation begins.
+
+---
+
+### Step 3.5 - Reuse Verification
+
+Before creating new code verify whether:
+
+- Existing services can be reused.
+- Existing repositories can be reused.
+- Existing DTOs can be reused.
+- Existing Angular components can be reused.
+- Existing Angular services can be reused.
+- Existing utilities can be reused.
+- Existing tests can be extended.
+
+Follow:
+
+- DRY (Don't Repeat Yourself)
+- Single Responsibility Principle (SRP)
+
+Prefer extending existing implementations over creating duplicate functionality.
 
 ---
 
@@ -261,40 +293,18 @@ Follow:
 
 ---
 
-## Scope Protection
-
-Implement only approved scope.
-
-Do not:
-
-- Refactor unrelated code.
-- Add unrelated features.
-- Introduce new frameworks.
-- Modify unrelated files.
-- Add technical debt cleanup unless explicitly approved.
-
-When uncertain:
-
-Stop and raise questions.
-
----
-
 ## Backend Development Standards
 
-Follow all standards defined in:
+Follow all backend standards defined in:
 
-copilot-instructions.md
+.github/copilot-instructions.md
 
-Specifically:
+Pay special attention to:
 
-- Controller → Service → Repository pattern
-- DTO based contracts
-- ActionResult<T>
-- Async/Await
-- CancellationToken
-- ILogger<T>
-- Structured logging
-- Security validation
+- Architecture standards
+- Security standards
+- Logging standards
+- Testing standards
 
 ---
 
@@ -324,14 +334,9 @@ Only where required.
 
 ## Frontend Development Standards
 
-Follow:
+Follow all Angular standards defined in:
 
-- Angular architecture
-- Angular coding standards
-- Reactive forms
-- Service-based API access
-- Strong typing
-- Shared component reuse
+.github/copilot-instructions.md
 
 ---
 
@@ -361,19 +366,13 @@ Only where required.
 
 ## Logging Requirements
 
-When features require logging:
+Follow logging standards defined in:
 
-Implement:
+.github/copilot-instructions.md
 
-- Start logs
-- Success logs
-- Error logs
+Implement logging only when appropriate.
 
-Include:
-
-- CorrelationId
-- RequestId
-- TicketId (where applicable)
+Prefer meaningful business and operational events over excessive logging.
 
 Do not log:
 
@@ -453,8 +452,6 @@ After implementation:
 
 Run:
 
-dotnet restore
-
 dotnet build
 
 Verify:
@@ -484,8 +481,6 @@ Document failures if any.
 If Angular exists:
 
 Run:
-
-npm install
 
 npm run build
 
@@ -522,6 +517,48 @@ Check for:
 - Unused imports
 - Build warnings
 - Security concerns
+
+---
+
+## Architecture Validation
+
+Verify implementation follows:
+
+- Existing repository patterns
+- SOLID principles
+- Single Responsibility Principle
+- DRY principles
+- Dependency Injection standards
+
+Document any justified deviations.
+
+---
+
+## Scope Drift Detection
+
+Before completion verify:
+
+- No requirements were added beyond specification scope.
+- No implementation exceeds approved requirements.
+- No unrelated files were modified.
+
+Document any deviations.
+
+## Scope Protection
+
+Implement only approved scope.
+
+Do not:
+
+- Refactor unrelated code.
+- Add unrelated features.
+- Introduce new frameworks.
+- Modify unrelated files.
+- Add technical debt cleanup unless explicitly approved.
+
+When uncertain:
+
+Stop and raise questions.
 
 ---
 

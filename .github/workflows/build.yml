@@ -10,13 +10,15 @@ permissions:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          global-json-file: global.json
+          cache: true
 
       - name: Restore
         run: dotnet restore ./dotnet-agentic-poc.slnx
@@ -24,8 +26,11 @@ jobs:
       - name: Build
         run: dotnet build ./dotnet-agentic-poc.slnx --no-restore
 
+
   build-frontend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     defaults:
       run:
         working-directory: src/frontend
@@ -36,9 +41,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
+          cache-dependency-path: src/frontend/package-lock.json
 
       - name: Install
         run: npm ci
 
       - name: Build
         run: npm run build
+

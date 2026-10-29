@@ -38,6 +38,8 @@ This agent may:
 - Identify impacted files.
 - Create BDD test specifications.
 - Create implementation scope.
+- Identify reuse opportunities.
+- Identify architectural constraints.
 
 This agent must not:
 
@@ -137,6 +139,33 @@ Read and analyze:
 
 ---
 
+## Scope Control
+
+Specifications must define only approved requirements.
+
+Do not:
+
+- Introduce additional features.
+- Introduce speculative enhancements.
+- Introduce unrelated refactoring.
+- Expand acceptance criteria.
+
+Document future opportunities separately under:
+
+Future Considerations
+
+These are not part of implementation scope.
+
+---
+
+### Future Considerations
+
+Document ideas, enhancements, or opportunities discovered during specification.
+
+These items are explicitly out of scope for the current work item.
+
+---
+
 ## Specification Workflow
 
 ### Step 1
@@ -185,6 +214,29 @@ Frontend:
 - Angular Forms
 - Angular State
 - Angular UI
+
+### Solution Reuse Analysis
+
+Identify whether:
+
+- Existing APIs can be extended.
+- Existing Angular components can be reused.
+- Existing services can be reused.
+- Existing repositories can be reused.
+- Existing specifications contain similar patterns.
+
+Prefer extending existing implementations over creating new ones.
+
+Follow DRY principles and repository standards.
+
+Determine whether:
+
+- Similar functional specifications exist.
+- Similar technical specifications exist.
+- Similar BDD scenarios already exist.
+- Existing specifications can be reused or adapted.
+
+Avoid creating duplicate design patterns where approved specifications already exist.
 
 ---
 
@@ -369,13 +421,49 @@ Summarize proposed solution.
 
 ---
 
-### Solution Design
+### Solution Approach
 
-Describe:
+Describe at a high level:
 
-- Backend Design
-- Frontend Design
-- Integration Design
+- Impacted backend areas
+- Impacted frontend areas
+- External integrations
+- Major workflow changes
+
+Avoid implementation details.
+
+Implementation belongs to #develop.
+
+---
+
+### Existing Pattern Analysis
+
+Identify:
+
+- Existing architectural patterns.
+- Existing API conventions.
+- Existing Angular conventions.
+- Existing testing patterns.
+- Existing logging patterns.
+
+Specifications should align with established repository conventions unless a deviation is explicitly justified.
+
+---
+
+### Architecture Compliance Analysis
+
+Verify proposed changes align with:
+
+- Existing repository architecture
+- SOLID principles
+- Single Responsibility Principle (SRP)
+- DRY (Don't Repeat Yourself)
+- Dependency Injection standards
+- Existing layering conventions
+
+Prefer extending existing implementations over introducing new abstractions.
+
+Any architectural deviation must be explicitly justified.
 
 ---
 
@@ -439,23 +527,17 @@ Versioning Impact
 
 ### Database Impact Analysis
 
-Tables
+Document database changes if applicable.
 
-Views
+Consider:
 
-Stored Procedures
-
-Functions
-
-Indexes
-
-Data Migration
-
-Rollback Impact
+- Tables
+- Views
+- Stored Procedures
+- Indexes
+- Data Migrations
 
 If no database changes exist:
-
-Explicitly document:
 
 "No database changes required."
 
@@ -473,31 +555,28 @@ Libraries Impacted
 
 ### Security Considerations
 
-Authentication
+Document only applicable security impacts.
 
-Authorization
+If no security impact exists explicitly state:
 
-Sensitive Data Handling
-
-Logging Risks
-
-Injection Risks
-
-API Security
+"No security impact identified."
 
 ---
 
 ### Performance Considerations
 
-Expected Performance Impact
+Document only applicable performance impacts.
 
-Caching Requirements
+Consider:
 
-Pagination Requirements
+- Caching
+- Pagination
+- Query Optimization
+- Resource Consumption
 
-Query Optimization Requirements
+If no meaningful performance impact exists:
 
-Resource Consumption
+"No material performance impact identified."
 
 ---
 
@@ -513,17 +592,13 @@ External Dependency Errors
 
 ---
 
-### Logging and Monitoring Strategy
+### Logging and Monitoring Considerations
 
-Application Logs
+Document only applicable logging or monitoring requirements.
 
-Audit Logs
+If no changes are required:
 
-Metrics
-
-Alerts
-
-Correlation IDs
+"No logging or monitoring changes required."
 
 ---
 
@@ -544,20 +619,6 @@ List every file expected to be modified.
 ## Files To Delete
 
 List every file expected to be removed.
-
----
-
-## Expected Folder Changes
-
-Backend
-
-Frontend
-
-Tests
-
-Documentation
-
-Configuration
 
 ---
 
@@ -587,91 +648,17 @@ There must be at least one test case per requirement.
 
 # BDD Test Specification
 
-Generate BDD scenarios for all functional requirements.
+Generate BDD scenarios sufficient to validate all requirements.
 
----
+Consider:
 
-## Success Scenarios
+- Success cases
+- Validation failures
+- Error handling
+- Security concerns
+- Edge cases
 
-Scenario:
-
-Given
-
-When
-
-Then
-
-And
-
----
-
-## Validation Scenarios
-
-Scenario:
-
-Given
-
-When
-
-Then
-
-And
-
----
-
-## Error Handling Scenarios
-
-Scenario:
-
-Given
-
-When
-
-Then
-
-And
-
----
-
-## Edge Cases
-
-Scenario:
-
-Given
-
-When
-
-Then
-
-And
-
----
-
-## Security Scenarios
-
-Scenario:
-
-Given
-
-When
-
-Then
-
-And
-
----
-
-## Non-Functional Scenarios
-
-Scenario:
-
-Given
-
-When
-
-Then
-
-And
+Generate only applicable scenarios.
 
 ---
 
@@ -684,6 +671,7 @@ Before completing the specification package verify:
 - Technical design exists.
 - Impact analysis completed.
 - Risks documented.
+- Scope clearly defined.
 - Out-of-scope documented.
 - All requirements mapped to tests.
 - BDD specifications created.
@@ -705,13 +693,11 @@ Specification phase is complete only when:
 
 ## Handoff
 
-Generate a Development Handoff Summary suitable for:
+Generate a Setup Handoff Summary suitable for:
 
 #setup <WorkItem>
 
-and
-
-#develop <WorkItem>
+The setup phase must complete successfully before development begins.
 
 Do not generate code.
 

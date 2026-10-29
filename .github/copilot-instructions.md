@@ -125,6 +125,31 @@ If similar logic exists in multiple locations, prefer refactoring into a reusabl
 - Extract reusable logic into shared services or helper classes when appropriate.
 - Avoid duplicated validation, mapping, or business rules.
 
+## Layer Dependency Rules
+
+Dependencies must flow inward.
+
+Controllers may depend on Services.
+
+Services may depend on Repositories.
+
+Repositories must not depend on Services.
+
+Repositories must not depend on Controllers.
+
+Controllers must not depend on Repositories directly unless explicitly justified.
+
+Avoid circular dependencies.
+
+## DTO Mapping Standards
+
+Use DTOs for API contracts.
+
+Avoid exposing domain entities directly.
+
+Mapping responsibilities should remain within the application layer.
+
+Avoid duplicating mapping logic.
 
 ## .NET API Design Standards
 
@@ -149,6 +174,36 @@ Response Types:
 - 409 Conflict
 - 422 UnprocessableEntity
 - 500 InternalServerError
+
+## Database Standards
+
+- Prefer indexed lookups when applicable.
+- Avoid SELECT * queries.
+- Avoid N+1 query patterns.
+- Apply pagination for potentially large result sets.
+- Database schema changes require migration strategy.
+- Database changes must include rollback considerations.
+
+## Error Handling Standards
+
+- Fail fast on invalid input.
+- Return meaningful validation errors.
+- Do not expose stack traces to clients.
+- Preserve exception context in logs.
+- Prefer centralized exception handling.
+- Use consistent error response structures.
+
+## Maintainability And Complexity Standards
+
+Avoid:
+
+- Deeply nested conditional logic.
+- Large methods.
+- Large classes.
+- Excessive parameter counts.
+- Excessive abstraction for simple scenarios.
+
+Prefer readability over cleverness.
 
 ## Repository Standards
 
@@ -184,11 +239,15 @@ Log Levels:
 - Error
 - Critical
 
-Each service operation should have:
+Log meaningful business and operational events.
 
-- Start log
-- Success log
-- Failure log
+Consider:
+
+- Operation Start
+- Operation Success
+- Operation Failure
+
+Avoid excessive logging for trivial operations.
 
 ## Performance Standards
 
@@ -219,6 +278,18 @@ Each service operation should have:
 - Include tests for success scenarios, validation failures, and error handling.
 - Keep tests independent and repeatable.
 - Run relevant tests before submitting changes.
+
+## Test Quality Standards
+
+Tests should:
+
+- Verify observable behavior.
+- Avoid implementation-coupled assertions.
+- Be deterministic.
+- Be isolated.
+- Avoid external dependencies where possible.
+
+Prefer testing business outcomes over implementation details.
 
 ## Frontend Technology Stack
 
@@ -493,6 +564,37 @@ No feature implementation is considered complete until both backend and frontend
 
 ---
 
+## Pull Request Scope Standards
+
+Each Pull Request should:
+
+- Address a single work item.
+- Remain within approved scope.
+- Avoid unrelated refactoring.
+- Remain reviewable by a human reviewer.
+
+Large work items should be split when practical.
+
+---
+
+## Existing Pattern First Rule
+
+Before creating:
+
+- Controllers
+- Services
+- Repositories
+- DTOs
+- Angular Components
+- Angular Services
+- Tests
+
+search the repository for an existing implementation.
+
+Prefer extending an established pattern instead of introducing a new pattern.
+
+---
+
 ## AI Assistant Instructions For Angular Development
 
 Before proposing Angular changes:
@@ -567,30 +669,6 @@ Work Item can be:
 
 No implementation should begin until requirements and specifications are approved.
 
-## Git Standards
-
-Branch Naming Convention
-
-feature/issue-{IssueId}-{short-description}
-
-Examples:
-
-feature/issue-15-customer-pagination
-feature/issue-28-product-search
-
-Commit Message Convention
-
-Issue #{IssueId} - <Summary>
-
-Examples:
-
-Issue #15 - Add customer pagination
-
-Issue #28 - Add product search endpoint
-
-Never commit directly to main.
-Always use feature branches.
-
 ## Code Reuse Standards
 
 Before generating new code, AI agents must:
@@ -663,29 +741,6 @@ Priority Order:
 If a Jira Ticket exists, Jira becomes the primary source of truth.
 
 GitHub Issues should be treated as supplemental unless explicitly specified otherwise.
-
-## Jira MCP Integration Standards
-
-When Jira MCP is available:
-
-- Retrieve ticket details directly from Jira.
-- Retrieve acceptance criteria.
-- Retrieve linked stories.
-- Retrieve linked subtasks.
-- Retrieve linked bugs.
-- Retrieve epic information.
-- Retrieve ticket comments.
-- Retrieve attachments if accessible.
-
-Do not ask the user for information already available through Jira.
-
-If ticket information conflicts with user instructions:
-
-- Highlight the conflict.
-- Ask for clarification.
-- Do not assume.
-
-All generated specifications must reference the originating Jira Ticket.
 
 ## Repository Source Of Truth
 
@@ -867,7 +922,7 @@ Implementation alone does not constitute completion.
 
 ---
 
-## MCP Integration Standards
+## MCP Standards
 
 When MCP servers are available:
 

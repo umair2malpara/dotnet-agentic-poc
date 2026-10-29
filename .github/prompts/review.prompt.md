@@ -70,12 +70,6 @@ If existing source code conflicts with copilot-instructions.md:
 - Document the conflict.
 - Do not silently ignore it.
 
-## Standards Compliance Review
-
-Review all implementation changes against:
-
-.github/copilot-instructions.md
-
 Verify compliance with:
 
 - Architecture standards
@@ -283,13 +277,15 @@ Middleware
 
 Configuration
 
-Check:
+Verify compliance with repository standards defined in:
 
-- Naming conventions
-- Async usage
-- CancellationToken usage
-- Dependency Injection
+.github/copilot-instructions.md
+
+Pay special attention to:
+
 - SOLID principles
+- SRP
+- DI usage
 - Readability
 - Maintainability
 
@@ -297,28 +293,17 @@ Check:
 
 ## 5. Frontend Code Review
 
-Review:
+Verify compliance with Angular standards defined in:
 
-Angular Components
+.github/copilot-instructions.md
 
-Angular Services
-
-Angular Models
-
-Angular Routing
-
-Angular Forms
-
-Angular State Management
-
-Check:
+Pay special attention to:
 
 - Strong typing
 - Component responsibility
 - Service responsibility
 - Reusability
 - Maintainability
-- Angular standards compliance
 
 ---
 
@@ -358,68 +343,32 @@ security findings.
 
 ## 7. Performance Review
 
-Review:
+Identify obvious performance concerns including:
 
-Database Access
-
-External Calls
-
-Loops
-
-Collections
-
-API Calls
-
-Angular Rendering
-
-State Management
-
-Identify:
-
-- N+1 queries
-- Repeated API calls
+- Inefficient database access
+- Excessive API calls
 - Unnecessary allocations
-- Excessive network usage
+- Rendering inefficiencies
 
-Provide optimization recommendations.
-
----
-
-## 8. Logging Review
-
-Verify:
-
-- ILogger<T> used correctly
-- Structured logging
-- Correlation IDs included where applicable
-- Errors logged appropriately
-
-Verify:
-
-No sensitive data is logged.
+Document only material findings.
 
 ---
 
-## 9. Testing Review
+## 8. Testing Review
+
+Verify test coverage is appropriate for implemented requirements.
 
 Review:
 
-Unit Tests
+- Requirement coverage
+- Error handling coverage
+- Edge case coverage
 
-BDD Coverage
-
-Integration Coverage (if applicable)
-
-Verify:
-
-- Happy paths covered
-- Validation failures covered
-- Exception paths covered
-- Edge cases covered
+Identify significant gaps.
 
 ---
 
-## 10. Traceability Validation
+## 9. Traceability Validation
 
 Verify:
 
@@ -437,7 +386,7 @@ At least one test.
 
 ---
 
-## 11. Documentation Review
+## 10. Documentation Review
 
 Verify:
 
@@ -455,7 +404,47 @@ Behavior changes
 
 ---
 
-## 12. Git Review
+## 11. Reuse And Maintainability Review
+
+Verify:
+
+- Existing implementations were reused when appropriate.
+- Duplicate services were not introduced.
+- Duplicate repositories were not introduced.
+- Duplicate Angular components were not introduced.
+- Duplicate business logic was not introduced.
+
+Review compliance with:
+
+- DRY
+- SRP
+
+Flag unnecessary duplication.
+
+## 12. Scope Compliance Review
+
+Verify:
+
+- No functionality outside approved scope was added.
+- No requirements were implemented without approval.
+- No unrelated files were modified.
+
+Flag scope expansion.
+
+## 13. Existing Pattern Compliance Review
+
+Verify implementation follows established repository patterns for:
+
+- Backend development
+- Angular development
+- Logging
+- Validation
+- Testing
+- Error handling
+
+Flag unnecessary deviation from established patterns.
+
+## 14. Git Review
 
 Review changes staged for commit.
 
@@ -481,6 +470,39 @@ temporary artifacts
 if present.
 
 ---
+
+## Review Efficiency
+
+Consume build and test results from the Development Report.
+
+Do not re-run:
+
+- dotnet build
+- dotnet test
+- npm run build
+- npm test
+
+unless review findings indicate build or test results are no longer trustworthy.
+
+Review should focus on validation rather than re-execution.
+
+---
+
+## Review Principles
+
+Act as an independent senior engineer.
+
+Focus on:
+
+- Correctness
+- Maintainability
+- Simplicity
+- Reuse
+- Architectural consistency
+
+Prefer identifying actual risks over suggesting subjective stylistic preferences.
+
+Do not request refactoring that is unrelated to the approved work item.
 
 # Review Classification
 
@@ -641,18 +663,26 @@ Yes / No
 
 ## Completion Criteria
 
-Review is complete only when:
+Review is complete when:
 
-- Requirements reviewed.
-- Specifications reviewed.
-- Code reviewed.
-- Security reviewed.
-- Performance reviewed.
-- Testing reviewed.
-- Documentation reviewed.
-- Git changes reviewed.
+- Implementation has been assessed against requirements and specifications.
+- Compliance with repository standards has been validated.
+- Findings have been documented.
+- Overall assessment has been generated.
 
-Final assessment generated.
+---
+
+## Commit Readiness Validation
+
+Before recommending #commit verify:
+
+- No Critical findings remain.
+- No High findings remain.
+- Approved implementation matches specification.
+- Scope compliance passes.
+- Security review passes.
+
+Only mark Ready For Commit when these conditions are met.
 
 ---
 
