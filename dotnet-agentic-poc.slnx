@@ -27,6 +27,9 @@
     <File Path="ADR-002-jira-mcp.md" />
     <File Path="ADR-003-angular-frontend.md" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="global.json" />
+  </Folder>
   <Folder Name="/specifications/" />
   <Folder Name="/specifications/issue-6/">
     <File Path="specifications/issue-6/functional-spec.md" />
@@ -54,6 +57,7 @@
     <File Path="scripts/test.ps1" />
     <File Path="scripts/test.sh" />
   </Folder>
+  <Folder Name="/src/" />
   <Folder Name="/src/frontend/">
     <File Path="src/frontend/package.json" />
     <File Path="src/frontend/angular.json" />
