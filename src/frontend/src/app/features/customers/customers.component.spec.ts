@@ -101,12 +101,13 @@ describe('CustomersComponent', () => {
         cancelLabel: 'No, keep them',
       }),
     );
-    expect(api.deleteCustomers).toHaveBeenCalledWith(['customer-1', 'customer-2']);
+    expect(api.deleteCustomers).toHaveBeenCalledWith(['customer-1', 'customer-2'], {
+      successMessage: '2 customers deleted successfully.',
+      suppressErrorNotification: true,
+    });
     expect(element.textContent).not.toContain('Alex Morgan');
     expect(element.textContent).toContain('No customers found');
-    expect(TestBed.inject(NotificationService).notification()?.message).toBe(
-      '2 customers deleted successfully.',
-    );
+    expect(TestBed.inject(NotificationService).notification()).toBeNull();
   });
 
   it('does not send a delete request when modal confirmation is cancelled', async () => {
@@ -123,7 +124,7 @@ describe('CustomersComponent', () => {
     expect(element.textContent).toContain('Alex Morgan');
   });
 
-  it('keeps customer data and selection and shows an error toast when deletion fails', async () => {
+  it('keeps customer data and selection and shows an inline error when deletion fails', async () => {
     api.deleteCustomers.mockReturnValue(throwError(() => new Error('API unavailable')));
     const fixture = TestBed.createComponent(CustomersComponent);
     fixture.detectChanges();
@@ -140,7 +141,7 @@ describe('CustomersComponent', () => {
     expect(element.querySelector('[role="alert"]')?.textContent).toContain(
       'Unable to confirm deletion',
     );
-    expect(TestBed.inject(NotificationService).notification()?.kind).toBe('error');
+    expect(TestBed.inject(NotificationService).notification()).toBeNull();
   });
 
   it('offers retry when loading customers fails', () => {
@@ -156,6 +157,10 @@ describe('CustomersComponent', () => {
     fixture.nativeElement.querySelector('button')?.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Alex Morgan');
+    expect(api.getCustomers).toHaveBeenLastCalledWith({
+      successMessage: 'Customer list refreshed.',
+      suppressErrorNotification: true,
+    });
   });
 
   it('explains stale IDs after an atomic delete fails without removing rows', async () => {

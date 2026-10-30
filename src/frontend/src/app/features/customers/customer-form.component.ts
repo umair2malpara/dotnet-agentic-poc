@@ -67,7 +67,7 @@ export class CustomerFormComponent {
   protected loadCustomer(id: string): void {
     this.loading.set(true);
     this.errorMessage.set(null);
-    this.api.getCustomer(id).subscribe({
+    this.api.getCustomer(id, { suppressErrorNotification: true }).subscribe({
       next: (customer) => {
         this.form.setValue({ name: customer.name, email: customer.email });
         this.customerLoaded.set(true);
@@ -99,34 +99,41 @@ export class CustomerFormComponent {
     this.submitting.set(true);
 
     if (this.customerId) {
-      this.api.updateCustomer(this.customerId, customer).subscribe({
-        next: () => void this.completeSave('Customer updated successfully.'),
-        error: (error: unknown) => {
-          const message =
-            error instanceof HttpErrorResponse && error.status === 404
-              ? 'This customer no longer exists. Return to the customer list.'
-              : 'Unable to save changes. Please try again.';
-          this.errorMessage.set(message);
-          this.notifications.showError(message);
-          this.submitting.set(false);
-        },
-      });
+      this.api
+        .updateCustomer(this.customerId, customer, {
+          successMessage: 'Customer updated successfully.',
+          suppressErrorNotification: true,
+        })
+        .subscribe({
+          next: () => void this.completeSave('Customer updated successfully.'),
+          error: (error: unknown) => {
+            const message =
+              error instanceof HttpErrorResponse && error.status === 404
+                ? 'This customer no longer exists. Return to the customer list.'
+                : 'Unable to save changes. Please try again.';
+            this.errorMessage.set(message);
+            this.submitting.set(false);
+          },
+        });
       return;
     }
 
-    this.api.createCustomer(customer).subscribe({
-      next: () => void this.completeSave('Customer created successfully.'),
-      error: () => {
-        const message = 'Unable to create the customer. Please try again.';
-        this.errorMessage.set(message);
-        this.notifications.showError(message);
-        this.submitting.set(false);
-      },
-    });
+    this.api
+      .createCustomer(customer, {
+        successMessage: 'Customer created successfully.',
+        suppressErrorNotification: true,
+      })
+      .subscribe({
+        next: () => void this.completeSave('Customer created successfully.'),
+        error: () => {
+          const message = 'Unable to create the customer. Please try again.';
+          this.errorMessage.set(message);
+          this.submitting.set(false);
+        },
+      });
   }
 
   private async completeSave(successMessage: string): Promise<void> {
-    this.notifications.showSuccess(successMessage);
     this.saved.set(true);
     this.form.markAsPristine();
     this.submitting.set(false);

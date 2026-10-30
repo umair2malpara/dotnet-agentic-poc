@@ -1,3 +1,4 @@
+using DotnetAgenticPoc.Api.Contracts;
 using DotnetAgenticPoc.Application.Services;
 using DotnetAgenticPoc.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ public sealed class WeatherForecastController(
     : ControllerBase
 {
     [HttpGet(Name = "GetWeatherForecast")]
-    public async Task<ActionResult<IReadOnlyCollection<WeatherForecast>>> Get(
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<WeatherForecast>>>> Get(
         [FromQuery] int count = 5,
         CancellationToken cancellationToken = default)
     {
@@ -19,6 +20,6 @@ public sealed class WeatherForecastController(
             count,
             cancellationToken);
 
-        return Ok(forecasts);
+        return Ok(ApiResponse<IReadOnlyCollection<WeatherForecast>>.Success(forecasts));
     }
 }

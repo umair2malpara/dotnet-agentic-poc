@@ -76,40 +76,42 @@ export class CustomersComponent {
     this.loadCustomers();
   }
 
-  protected loadCustomers(): void {
+  protected loadCustomers(explicitRefresh = false): void {
     this.customers.set({ status: 'loading' });
-    this.api.getCustomers().subscribe({
-      next: (data) => {
-        this.customers.set({ status: 'success', data });
-        const availableIds = new Set(data.map((customer) => customer.id));
-        this.selectedIds.update(
-          (selected) => new Set([...selected].filter((id) => availableIds.has(id))),
-        );
-        this.deleteError.set(null);
-        this.pendingCustomerSaveMessage = null;
-        if (this.saveRefreshFailed) {
-          this.notifications.showSuccess('Customer list refreshed.');
-          this.saveRefreshFailed = false;
-        }
-      },
-      error: () => {
-        this.customers.set({
-          status: 'error',
-          message: 'Unable to load customers. Check the API connection and try again.',
-        });
-        if (this.pendingCustomerSaveMessage) {
-          this.notifications.showWarning(
-            `${this.pendingCustomerSaveMessage} However, the customer list could not be refreshed. Retry to load the latest data.`,
+    this.api
+      .getCustomers({
+        successMessage: explicitRefresh ? 'Customer list refreshed.' : undefined,
+        suppressErrorNotification: true,
+      })
+      .subscribe({
+        next: (data) => {
+          this.customers.set({ status: 'success', data });
+          const availableIds = new Set(data.map((customer) => customer.id));
+          this.selectedIds.update(
+            (selected) => new Set([...selected].filter((id) => availableIds.has(id))),
           );
+          this.deleteError.set(null);
           this.pendingCustomerSaveMessage = null;
-          this.saveRefreshFailed = true;
-        } else if (this.saveRefreshFailed) {
-          this.notifications.showWarning(
-            'The customer was saved, but the list is still unavailable. Retry to load the latest data.',
-          );
-        }
-      },
-    });
+          this.saveRefreshFailed = false;
+        },
+        error: () => {
+          this.customers.set({
+            status: 'error',
+            message: 'Unable to load customers. Check the API connection and try again.',
+          });
+          if (this.pendingCustomerSaveMessage) {
+            this.notifications.showWarning(
+              `${this.pendingCustomerSaveMessage} However, the customer list could not be refreshed. Retry to load the latest data.`,
+            );
+            this.pendingCustomerSaveMessage = null;
+            this.saveRefreshFailed = true;
+          } else if (this.saveRefreshFailed) {
+            this.notifications.showWarning(
+              'The customer was saved, but the list is still unavailable. Retry to load the latest data.',
+            );
+          }
+        },
+      });
   }
 
   protected isSelected(id: string): boolean {
@@ -184,33 +186,35 @@ export class CustomersComponent {
 
     this.deleteError.set(null);
     this.deleteInProgress.set(true);
-    this.api.deleteCustomers(ids).subscribe({
-      next: () => {
-        this.customers.update((current) =>
-          current.status === 'success'
-            ? {
-                status: 'success',
-                data: current.data.filter((customer) => !ids.includes(customer.id)),
-              }
-            : current,
-        );
-        this.selectedIds.set(new Set());
-        this.deleteInProgress.set(false);
-        this.notifications.showSuccess(
+    this.api
+      .deleteCustomers(ids, {
+        successMessage:
           ids.length === 1
             ? 'Customer deleted successfully.'
             : `${ids.length} customers deleted successfully.`,
-        );
-      },
-      error: (error: unknown) => {
-        const message =
-          error instanceof HttpErrorResponse && error.status === 404
-            ? 'No customers were deleted because one or more no longer exist. Refresh the list before trying again.'
-            : 'Unable to confirm deletion. The list and selection were kept. Refresh the list or retry.';
-        this.deleteError.set(message);
-        this.notifications.showError(message);
-        this.deleteInProgress.set(false);
-      },
-    });
+        suppressErrorNotification: true,
+      })
+      .subscribe({
+        next: () => {
+          this.customers.update((current) =>
+            current.status === 'success'
+              ? {
+                  status: 'success',
+                  data: current.data.filter((customer) => !ids.includes(customer.id)),
+                }
+              : current,
+          );
+          this.selectedIds.set(new Set());
+          this.deleteInProgress.set(false);
+        },
+        error: (error: unknown) => {
+          const message =
+            error instanceof HttpErrorResponse && error.status === 404
+              ? 'No customers were deleted because one or more no longer exist. Refresh the list before trying again.'
+              : 'Unable to confirm deletion. The list and selection were kept. Refresh the list or retry.';
+          this.deleteError.set(message);
+          this.deleteInProgress.set(false);
+        },
+      });
   }
 }

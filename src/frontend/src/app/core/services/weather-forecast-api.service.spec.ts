@@ -1,11 +1,9 @@
-import { provideHttpClient } from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { WeatherForecastApiService } from './weather-forecast-api.service';
+import { apiResponseInterceptor } from '../interceptors/api-response.interceptor';
 
 describe('WeatherForecastApiService', () => {
   let service: WeatherForecastApiService;
@@ -14,7 +12,7 @@ describe('WeatherForecastApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withInterceptors([apiResponseInterceptor])),
         provideHttpClientTesting(),
         WeatherForecastApiService,
       ],
@@ -32,6 +30,6 @@ describe('WeatherForecastApiService', () => {
       `${environment.apiBaseUrl.replace(/\/+$/, '')}/api/weatherforecast?count=5`,
     );
     expect(request.request.method).toBe('GET');
-    request.flush([]);
+    request.flush({ data: [] });
   });
 });

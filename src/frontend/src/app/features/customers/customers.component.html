@@ -2,7 +2,9 @@
   @if (deleteError(); as message) {
     <div class="operation-error" role="alert">
       <p>{{ message }}</p>
-      <button class="secondary-button" type="button" (click)="loadCustomers()">Refresh list</button>
+      <button class="secondary-button" type="button" (click)="loadCustomers(true)">
+        Refresh list
+      </button>
     </div>
   }
 
@@ -12,7 +14,7 @@
     } @else if (state.status === 'error') {
       <div class="state-message error-state" role="alert">
         <p>{{ state.message }}</p>
-        <button class="secondary-button" type="button" (click)="loadCustomers()">Retry</button>
+        <button class="secondary-button" type="button" (click)="loadCustomers(true)">Retry</button>
       </div>
     } @else if (state.data.length === 0) {
       <p class="state-message" role="status">No customers found. Add a customer to get started.</p>

@@ -27,11 +27,11 @@
     />
   </section>
 
-  <app-weather-forecast [state]="weather()" (retry)="loadWeather()" />
+  <app-weather-forecast [state]="weather()" (retry)="loadWeather(true)" />
 
   <div class="detail-grid">
-    <app-customer-list [state]="customers()" (retry)="loadCustomers()" />
-    <app-product-list [state]="products()" (retry)="loadProducts()" />
+    <app-customer-list [state]="customers()" (retry)="loadCustomers(true)" />
+    <app-product-list [state]="products()" (retry)="loadProducts(true)" />
   </div>
 
   <footer class="page-footer">Dotnet Agentic POC <span>·</span> Dashboard</footer>

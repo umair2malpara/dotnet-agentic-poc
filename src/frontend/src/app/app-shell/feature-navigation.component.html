@@ -1,0 +1,23 @@
+<aside
+  id="feature-navigation"
+  class="sidebar"
+  [class.mobile-open]="mobileNavigationOpen()"
+  aria-label="Feature navigation"
+  (keydown.escape)="closeMobileNavigation.emit()"
+>
+  <p class="nav-label">Workspace</p>
+  <nav aria-label="Features">
+    @for (item of items(); track item.route) {
+      <a
+        class="nav-link"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: item.exact }"
+        (click)="closeMobileNavigation.emit()"
+      >
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+</aside>

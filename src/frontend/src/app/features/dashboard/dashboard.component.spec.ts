@@ -47,6 +47,10 @@ describe('DashboardComponent', () => {
     expect(customerApi.getCustomers).toHaveBeenCalledOnce();
     expect(productApi.getProducts).toHaveBeenCalledOnce();
     expect(weatherApi.getWeatherForecasts).toHaveBeenCalledOnce();
+    expect(customerApi.getCustomers).toHaveBeenCalledWith({
+      successMessage: undefined,
+      suppressErrorNotification: true,
+    });
     expect(fixture.nativeElement.textContent).toContain('Alex Morgan');
     expect(fixture.nativeElement.textContent).toContain('Starter Kit');
     expect(fixture.nativeElement.textContent).toContain('Mild');
@@ -105,14 +109,16 @@ describe('DashboardComponent', () => {
 
     expect(root.textContent).toContain('Alex Morgan');
     expect(root.textContent).toContain('Mild');
-    expect(root.querySelector('[role="alert"]')?.textContent).toContain(
-      'Unable to load data.',
-    );
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain('Unable to load data.');
 
     root.querySelector<HTMLButtonElement>('app-product-list button')?.click();
     fixture.detectChanges();
 
     expect(products).toHaveBeenCalledTimes(2);
+    expect(products).toHaveBeenLastCalledWith({
+      successMessage: 'Product data refreshed.',
+      suppressErrorNotification: true,
+    });
     expect(customerApi.getCustomers).toHaveBeenCalledOnce();
     expect(weatherApi.getWeatherForecasts).toHaveBeenCalledOnce();
   });
