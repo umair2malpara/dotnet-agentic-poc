@@ -4,6 +4,8 @@ The customer endpoints expose fictional, in-memory proof-of-concept data. The AP
 
 The frontend origin must be explicitly permitted by the API CORS configuration. In Development, the configured frontend origin is `http://localhost:4200`. CORS does not provide authentication or authorization.
 
+All successful endpoints return the [shared API response contract](./responses.md). The resource representation below is nested under the envelope's `data` property.
+
 ## Customer representation
 
 ```json
@@ -20,12 +22,12 @@ Names and emails are trimmed before create/update. A name must contain a non-whi
 
 | Method | Path | Success | Failure |
 |---|---|---|---|
-| `GET` | `/api/customers` | `200 OK`, customer collection | API error |
-| `GET` | `/api/customers/{id}` | `200 OK`, customer | `404 Not Found` |
-| `POST` | `/api/customers` | `201 Created`, created customer | `400 Bad Request` for invalid customer fields |
-| `PUT` | `/api/customers/{id}` | `204 No Content` | `400 Bad Request` for invalid customer fields; `404 Not Found` |
-| `DELETE` | `/api/customers/{id}` | `204 No Content` | `404 Not Found` |
-| `POST` | `/api/customers/bulk-delete` | `204 No Content` | `400 Bad Request` for an empty/invalid request; `404 Not Found` if any ID does not exist |
+| `GET` | `/api/customers` | `200 OK`, wrapped customer collection | Problem Details |
+| `GET` | `/api/customers/{id}` | `200 OK`, wrapped customer | `404 Not Found`, Problem Details |
+| `POST` | `/api/customers` | `201 Created`, wrapped customer | `400 Bad Request`, Validation Problem Details |
+| `PUT` | `/api/customers/{id}` | `200 OK`, `{ "data": null }` | `400 Bad Request`, Validation Problem Details; `404 Not Found`, Problem Details |
+| `DELETE` | `/api/customers/{id}` | `200 OK`, `{ "data": null }` | `404 Not Found`, Problem Details |
+| `POST` | `/api/customers/bulk-delete` | `200 OK`, `{ "data": null }` | `400 Bad Request` for an empty/invalid request; `404 Not Found` if any ID does not exist |
 
 ### Atomic bulk deletion
 
@@ -40,6 +42,6 @@ Names and emails are trimmed before create/update. A name must contain a non-whi
 }
 ```
 
-IDs are deduplicated. If every distinct ID exists, all requested customers are removed and the API returns `204 No Content`. If any ID is missing, none are removed and the API returns `404 Not Found` with a `ProblemDetails` response. Empty ID collections and malformed requests are rejected without mutation.
+IDs are deduplicated. If every distinct ID exists, all requested customers are removed and the API returns `200 OK` with `{ "data": null }`. If any ID is missing, none are removed and the API returns `404 Not Found` with a Problem Details response. Empty ID collections and malformed requests are rejected without mutation.
 
 The in-memory repository synchronizes bulk deletion with other customer reads and mutations so a batch is not partially applied by concurrent API calls.

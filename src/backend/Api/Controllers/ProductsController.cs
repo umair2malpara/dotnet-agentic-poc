@@ -1,3 +1,4 @@
+using DotnetAgenticPoc.Api.Contracts;
 using DotnetAgenticPoc.Application.Services;
 using DotnetAgenticPoc.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,33 +11,48 @@ public sealed class ProductsController(
     IProductService productService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyCollection<Product>>> GetAll(
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<Product>>>> GetAll(
         CancellationToken cancellationToken)
     {
         var products = await productService.GetAllAsync(cancellationToken);
-        return Ok(products);
+        return Ok(ApiResponse<IReadOnlyCollection<Product>>.Success(products));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Product>> GetById(
+    public async Task<ActionResult<ApiResponse<Product>>> GetById(
         Guid id,
         CancellationToken cancellationToken)
     {
         var product = await productService.GetByIdAsync(id, cancellationToken);
 
         return product is null
-            ? NotFound()
-            : Ok(product);
+            ? Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Product not found",
+                detail: "The requested product was not found.")
+            : Ok(ApiResponse<Product>.Success(product));
     }
 
     [HttpPost]
-    public async Task<ActionResult<Product>> Create(
+    public async Task<ActionResult<ApiResponse<Product>>> Create(
         Product product,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(product.Name) || product.Price < 0)
+        if (string.IsNullOrWhiteSpace(product.Name))
         {
-            return BadRequest("Product name and a non-negative price are required.");
+            ModelState.AddModelError(
+                nameof(product.Name),
+                "Product name is required.");
+        }
+        if (product.Price < 0)
+        {
+            ModelState.AddModelError(
+                nameof(product.Price),
+                "Product price must be non-negative.");
+        }
+        if (!ModelState.IsValid)
+        {
+            return ApiProblemDetailsFactory.CreateValidationProblem(ModelState);
         }
 
         var createdProduct =
@@ -45,7 +61,7 @@ public sealed class ProductsController(
         return CreatedAtAction(
             nameof(GetById),
             new { id = createdProduct.Id },
-            createdProduct);
+            ApiResponse<Product>.Success(createdProduct));
     }
 
     [HttpPut("{id:guid}")]
@@ -60,7 +76,12 @@ public sealed class ProductsController(
             product,
             cancellationToken);
 
-        return updated ? NoContent() : NotFound();
+        return updated
+            ? Ok(ApiResponse<object?>.Success(null))
+            : Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Product not found",
+                detail: "The requested product was not found.");
     }
 
     [HttpDelete("{id:guid}")]
@@ -72,6 +93,11 @@ public sealed class ProductsController(
             id,
             cancellationToken);
 
-        return deleted ? NoContent() : NotFound();
+        return deleted
+            ? Ok(ApiResponse<object?>.Success(null))
+            : Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Product not found",
+                detail: "The requested product was not found.");
     }
 }

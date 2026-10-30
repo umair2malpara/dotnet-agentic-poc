@@ -1,11 +1,9 @@
-import { provideHttpClient } from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { ProductApiService } from './product-api.service';
+import { apiResponseInterceptor } from '../interceptors/api-response.interceptor';
 
 describe('ProductApiService', () => {
   let service: ProductApiService;
@@ -14,7 +12,7 @@ describe('ProductApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withInterceptors([apiResponseInterceptor])),
         provideHttpClientTesting(),
         ProductApiService,
       ],
@@ -28,10 +26,8 @@ describe('ProductApiService', () => {
   it('requests products from the configured API', () => {
     service.getProducts().subscribe();
 
-    const request = http.expectOne(
-      `${environment.apiBaseUrl.replace(/\/+$/, '')}/api/products`,
-    );
+    const request = http.expectOne(`${environment.apiBaseUrl.replace(/\/+$/, '')}/api/products`);
     expect(request.request.method).toBe('GET');
-    request.flush([]);
+    request.flush({ data: [] });
   });
 });

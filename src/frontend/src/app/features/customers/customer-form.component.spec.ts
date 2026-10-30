@@ -148,14 +148,16 @@ describe('CustomerFormComponent', () => {
       ?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     fixture.detectChanges();
 
-    expect(api.createCustomer).toHaveBeenCalledWith({
-      name: 'New Customer',
-      email: 'new@example.test',
-    });
-    expect(TestBed.inject(NotificationService).notification()).toEqual({
-      kind: 'success',
-      message: 'Customer created successfully.',
-    });
+    expect(api.createCustomer).toHaveBeenCalledWith(
+      {
+        name: 'New Customer',
+        email: 'new@example.test',
+      },
+      {
+        successMessage: 'Customer created successfully.',
+        suppressErrorNotification: true,
+      },
+    );
   });
 
   it('loads customer values and updates the selected customer', () => {
@@ -175,10 +177,17 @@ describe('CustomerFormComponent', () => {
       .querySelector('form')
       ?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
-    expect(api.updateCustomer).toHaveBeenCalledWith('customer-1', {
-      name: 'Updated Name',
-      email: 'alex@example.test',
-    });
+    expect(api.updateCustomer).toHaveBeenCalledWith(
+      'customer-1',
+      {
+        name: 'Updated Name',
+        email: 'alex@example.test',
+      },
+      {
+        successMessage: 'Customer updated successfully.',
+        suppressErrorNotification: true,
+      },
+    );
   });
 
   it('clears the create form for another customer when the user declines navigation', async () => {
@@ -211,7 +220,7 @@ describe('CustomerFormComponent', () => {
     expect(
       element.querySelector<HTMLButtonElement>('[aria-label="Page actions"] .primary')?.disabled,
     ).toBe(true);
-    expect(TestBed.inject(NotificationService).notification()?.kind).toBe('success');
+    expect(TestBed.inject(NotificationService).notification()).toBeNull();
   });
 
   it('keeps saved edit values when the user declines navigation', async () => {
@@ -261,7 +270,7 @@ describe('CustomerFormComponent', () => {
       'Unable to create the customer',
     );
     expect(element.querySelector('form')).not.toBeNull();
-    expect(TestBed.inject(NotificationService).notification()?.kind).toBe('error');
+    expect(TestBed.inject(NotificationService).notification()).toBeNull();
   });
 
   it('offers a return link when the edited customer no longer exists', () => {

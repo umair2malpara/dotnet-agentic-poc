@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddOpenApi();
 
 const string frontendCorsPolicy = "Frontend";
@@ -59,6 +61,7 @@ builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
 var app = builder.Build();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -69,6 +72,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(frontendCorsPolicy);
+app.UseStatusCodePages();
 
 app.UseAuthorization();
 

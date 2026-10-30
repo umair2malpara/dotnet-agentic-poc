@@ -1,11 +1,9 @@
-import { provideHttpClient } from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { CustomerApiService } from './customer-api.service';
+import { apiResponseInterceptor } from '../interceptors/api-response.interceptor';
 
 describe('CustomerApiService', () => {
   let service: CustomerApiService;
@@ -15,7 +13,7 @@ describe('CustomerApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withInterceptors([apiResponseInterceptor])),
         provideHttpClientTesting(),
         CustomerApiService,
       ],
@@ -31,7 +29,7 @@ describe('CustomerApiService', () => {
 
     const request = http.expectOne(customersUrl);
     expect(request.request.method).toBe('GET');
-    request.flush([]);
+    request.flush({ data: [] });
   });
 
   it('retrieves a customer by ID', () => {
@@ -39,7 +37,9 @@ describe('CustomerApiService', () => {
 
     const request = http.expectOne(`${customersUrl}/customer-1`);
     expect(request.request.method).toBe('GET');
-    request.flush({ id: 'customer-1', name: 'Alex Morgan', email: 'alex@example.test' });
+    request.flush({
+      data: { id: 'customer-1', name: 'Alex Morgan', email: 'alex@example.test' },
+    });
   });
 
   it('creates a customer', () => {
@@ -49,7 +49,7 @@ describe('CustomerApiService', () => {
     const request = http.expectOne(customersUrl);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(customer);
-    request.flush({ id: 'customer-2', ...customer });
+    request.flush({ data: { id: 'customer-2', ...customer } });
   });
 
   it('updates a customer', () => {
@@ -59,7 +59,7 @@ describe('CustomerApiService', () => {
     const request = http.expectOne(`${customersUrl}/customer-1`);
     expect(request.request.method).toBe('PUT');
     expect(request.request.body).toEqual(customer);
-    request.flush(null);
+    request.flush({ data: null });
   });
 
   it('deletes multiple customers in one request', () => {
@@ -69,6 +69,6 @@ describe('CustomerApiService', () => {
     const request = http.expectOne(`${customersUrl}/bulk-delete`);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual({ ids });
-    request.flush(null);
+    request.flush({ data: null });
   });
 });

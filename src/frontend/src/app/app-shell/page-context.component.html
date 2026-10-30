@@ -1,0 +1,51 @@
+@if (visible()) {
+  <section class="page-context" aria-label="Current page">
+    <div class="page-context-content">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a routerLink="/dashboard">Home</a></li>
+          @for (item of breadcrumbs(); track item.url; let last = $last) {
+            <li>
+              @if (last) {
+                <span aria-current="page" aria-live="polite">{{ item.label }}</span>
+              } @else {
+                <a [routerLink]="item.url">{{ item.label }}</a>
+              }
+            </li>
+          }
+        </ol>
+      </nav>
+      <div class="page-context-heading">
+        <h1 id="page-title" class="page-context-title">{{ context().title }}</h1>
+        @if (context().description) {
+          <p class="page-context-description">{{ context().description }}</p>
+        }
+      </div>
+    </div>
+    <button
+      class="context-hide-toggle"
+      type="button"
+      aria-label="Hide page context bar"
+      (click)="visible.set(false)"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2.8 12s3.2-6 9.2-6a9.9 9.9 0 0 1 5.2 1.5" />
+        <path d="M21.2 12s-3.2 6-9.2 6a9.9 9.9 0 0 1-5.2-1.5" />
+        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+        <path d="m3 3 18 18" />
+      </svg>
+    </button>
+  </section>
+} @else {
+  <button
+    class="context-restore-toggle"
+    type="button"
+    aria-label="Show page context bar"
+    (click)="visible.set(true)"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M2.8 12s3.2-6 9.2-6 9.2 6 9.2 6-3.2 6-9.2 6-9.2-6-9.2-6Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  </button>
+}

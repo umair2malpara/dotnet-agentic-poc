@@ -40,6 +40,8 @@ The frontend is a single-page application: `/` and unknown paths redirect to `/d
 
 The API base URL is configured in `src/frontend/src/environments/environment.ts` and `src/frontend/src/environments/environment.development.ts`. The API permits `http://localhost:4200` in Development. For other environments, set `Cors:AllowedOrigins` to an explicit list of allowed origins, for example through the `Cors__AllowedOrigins__0` environment variable. The API fails startup outside Development when no allowed origins are configured or when an origin value is invalid. CORS does not provide authentication or authorization.
 
+API success and error formats are documented in the [shared API response contract](./docs/api/responses.md). Frontend interceptor, notification, navigation, and shell conventions are described in [shared frontend patterns](./docs/architecture/frontend-http-and-shell.md).
+
 ## Build and test
 
 Run all baseline validations from the repository root:

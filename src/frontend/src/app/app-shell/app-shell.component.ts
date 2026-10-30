@@ -1,23 +1,23 @@
-import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { NotificationService } from '../core/services/notification.service';
-
-interface BreadcrumbItem {
-  readonly label: string;
-  readonly url: string;
-}
-
-interface PageContext {
-  readonly title: string;
-  readonly description: string;
-}
+import { FeatureNavigationComponent } from './feature-navigation.component';
+import { FEATURE_NAVIGATION_ITEMS } from './feature-navigation.config';
+import { BreadcrumbItem, PageContext, PageContextComponent } from './page-context.component';
+import { TopNavigationComponent } from './top-navigation.component';
 
 @Component({
   selector: 'app-shell',
-  imports: [ConfirmationDialogComponent, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [
+    ConfirmationDialogComponent,
+    FeatureNavigationComponent,
+    PageContextComponent,
+    RouterOutlet,
+    TopNavigationComponent,
+  ],
   styleUrl: './app-shell.component.scss',
   templateUrl: './app-shell.component.html',
 })
@@ -25,24 +25,14 @@ export class AppShellComponent {
   private readonly router = inject(Router);
   protected readonly notifications = inject(NotificationService);
 
-  @ViewChild('menuButton') private menuButton?: ElementRef<HTMLButtonElement>;
-
+  protected readonly featureNavigationItems = FEATURE_NAVIGATION_ITEMS;
   protected readonly breadcrumbs = signal<BreadcrumbItem[]>([]);
   protected readonly pageContext = signal<PageContext>({
     title: 'Dashboard',
     description: 'A snapshot of your weather, customers, and products.',
   });
-  protected readonly pageContextVisible = signal(true);
   protected readonly mobileNavigationOpen = signal(false);
   protected readonly desktopNavigationCollapsed = signal(false);
-
-  protected hidePageContext(): void {
-    this.pageContextVisible.set(false);
-  }
-
-  protected showPageContext(): void {
-    this.pageContextVisible.set(true);
-  }
 
   constructor() {
     this.updateBreadcrumbs();
@@ -63,19 +53,7 @@ export class AppShellComponent {
   }
 
   protected closeMobileNavigation(): void {
-    if (!this.mobileNavigationOpen()) {
-      return;
-    }
-
     this.mobileNavigationOpen.set(false);
-    this.menuButton?.nativeElement.focus();
-  }
-
-  protected onNavigationKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      this.closeMobileNavigation();
-    }
   }
 
   protected onPageActivated(): void {

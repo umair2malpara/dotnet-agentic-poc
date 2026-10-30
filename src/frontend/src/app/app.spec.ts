@@ -258,14 +258,17 @@ describe('application routing', () => {
     await new Promise((resolve) => setTimeout(resolve, 650));
     harness.detectChanges();
 
-    expect(customerApi.createCustomer).toHaveBeenCalledWith({
-      name: 'Taylor Chen',
-      email: 'taylor@example.test',
-    });
-    expect(TestBed.inject(Router).url).toBe('/customers/new');
-    expect(shell.querySelector('[role="status"].toast')?.textContent).toContain(
-      'Customer created successfully.',
+    expect(customerApi.createCustomer).toHaveBeenCalledWith(
+      {
+        name: 'Taylor Chen',
+        email: 'taylor@example.test',
+      },
+      {
+        successMessage: 'Customer created successfully.',
+        suppressErrorNotification: true,
+      },
     );
+    expect(TestBed.inject(Router).url).toBe('/customers/new');
     expect(shell.querySelector('dialog[open]')?.textContent).toContain(
       'Would you like to return to the customer list?',
     );
@@ -276,9 +279,6 @@ describe('application routing', () => {
 
     expect(TestBed.inject(Router).url).toBe('/customers');
     expect(shell.querySelector('[role="alert"].toast')?.textContent).toContain(
-      'Customer created successfully.',
-    );
-    expect(shell.querySelector('[role="alert"].toast')?.textContent).toContain(
       'customer list could not be refreshed',
     );
     expect(shell.querySelector('.error-state')?.textContent).toContain('Unable to load customers');
@@ -288,9 +288,10 @@ describe('application routing', () => {
     harness.detectChanges();
 
     expect(shell.textContent).toContain('Alex Morgan');
-    expect(shell.querySelector('[role="status"].toast')?.textContent).toContain(
-      'Customer list refreshed.',
-    );
+    expect(customerApi.getCustomers).toHaveBeenLastCalledWith({
+      successMessage: 'Customer list refreshed.',
+      suppressErrorNotification: true,
+    });
     shell.querySelector<HTMLButtonElement>('.toast button')?.click();
     harness.detectChanges();
     expect(shell.querySelector('.toast')).toBeNull();
@@ -362,10 +363,10 @@ describe('application routing', () => {
     await harness.fixture.whenStable();
     harness.detectChanges();
 
-    expect(customerApi.deleteCustomers).toHaveBeenCalledWith(['customer-1']);
-    expect(shell.querySelector('[role="status"].toast')?.textContent).toContain(
-      'Customer deleted successfully.',
-    );
+    expect(customerApi.deleteCustomers).toHaveBeenCalledWith(['customer-1'], {
+      successMessage: 'Customer deleted successfully.',
+      suppressErrorNotification: true,
+    });
   });
 
   it('navigates through the wordmark without a document reload', async () => {

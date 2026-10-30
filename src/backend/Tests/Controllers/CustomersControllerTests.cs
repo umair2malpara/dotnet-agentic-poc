@@ -1,3 +1,4 @@
+using DotnetAgenticPoc.Api.Contracts;
 using DotnetAgenticPoc.Api.Contracts.Customers;
 using DotnetAgenticPoc.Api.Controllers;
 using DotnetAgenticPoc.Application.Services;
@@ -24,10 +25,65 @@ public sealed class CustomersControllerTests
 
         var result = await controller.Create(customer, CancellationToken.None);
         var created = Assert.IsType<CreatedAtActionResult>(result.Result);
-        var savedCustomer = Assert.IsType<Customer>(created.Value);
+        var savedCustomer = Assert.IsType<ApiResponse<Customer>>(created.Value).Data!;
 
         Assert.Equal("New Customer", savedCustomer.Name);
         Assert.Equal("new.customer@example.test", savedCustomer.Email);
+    }
+
+    [Fact]
+    public async Task GetAll_ReturnsCustomersInSuccessEnvelope()
+    {
+        var controller = new CustomersController(
+            new CustomerService(new InMemoryCustomerRepository()));
+
+        var result = await controller.GetAll(CancellationToken.None);
+        var success = Assert.IsType<OkObjectResult>(result.Result);
+        var response = Assert.IsType<ApiResponse<IReadOnlyCollection<Customer>>>(success.Value);
+
+        Assert.NotEmpty(response.Data!);
+    }
+
+    [Fact]
+    public async Task Update_WhenCustomerExists_ReturnsNullDataSuccessEnvelope()
+    {
+        var repository = new InMemoryCustomerRepository();
+        var existing = (await repository.GetAllAsync(CancellationToken.None)).First();
+        var controller = new CustomersController(new CustomerService(repository));
+
+        var result = await controller.Update(
+            existing.Id,
+            new Customer { Name = "Updated Customer", Email = "updated@example.test" },
+            CancellationToken.None);
+        var success = Assert.IsType<OkObjectResult>(result);
+
+        Assert.Equal(new ApiResponse<object?>(null), success.Value);
+    }
+
+    [Fact]
+    public async Task Delete_WhenCustomerExists_ReturnsNullDataSuccessEnvelope()
+    {
+        var repository = new InMemoryCustomerRepository();
+        var existing = (await repository.GetAllAsync(CancellationToken.None)).First();
+        var controller = new CustomersController(new CustomerService(repository));
+
+        var result = await controller.Delete(existing.Id, CancellationToken.None);
+        var success = Assert.IsType<OkObjectResult>(result);
+
+        Assert.Equal(new ApiResponse<object?>(null), success.Value);
+    }
+
+    [Fact]
+    public async Task GetById_WhenCustomerDoesNotExist_ReturnsProblemDetails()
+    {
+        var controller = new CustomersController(
+            new CustomerService(new InMemoryCustomerRepository()));
+
+        var result = await controller.GetById(Guid.NewGuid(), CancellationToken.None);
+        var problem = Assert.IsType<ObjectResult>(result.Result);
+
+        Assert.Equal(StatusCodes.Status404NotFound, problem.StatusCode);
+        Assert.IsType<ProblemDetails>(problem.Value);
     }
 
     [Fact]
@@ -112,7 +168,7 @@ public sealed class CustomersControllerTests
     }
 
     [Fact]
-    public async Task DeleteMany_WhenAllIdsExist_ReturnsNoContent()
+    public async Task DeleteMany_WhenAllIdsExist_ReturnsSuccessEnvelope()
     {
         var repository = new InMemoryCustomerRepository();
         var ids = (await repository.GetAllAsync(CancellationToken.None))
@@ -125,7 +181,9 @@ public sealed class CustomersControllerTests
             new BulkDeleteCustomersRequest { Ids = ids },
             CancellationToken.None);
 
-        Assert.IsType<NoContentResult>(result);
+        var success = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(StatusCodes.Status200OK, success.StatusCode);
+        Assert.Equal(new ApiResponse<object?>(null), success.Value);
     }
 
     [Fact]

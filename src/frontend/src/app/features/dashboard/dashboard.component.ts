@@ -50,16 +50,34 @@ export class DashboardComponent {
     this.loadProducts();
   }
 
-  protected loadWeather(): void {
-    this.loadDataset(this.weatherApi.getWeatherForecasts(), this.weather);
+  protected loadWeather(explicitRefresh = false): void {
+    this.loadDataset(
+      this.weatherApi.getWeatherForecasts({
+        successMessage: explicitRefresh ? 'Weather forecast refreshed.' : undefined,
+        suppressErrorNotification: true,
+      }),
+      this.weather,
+    );
   }
 
-  protected loadCustomers(): void {
-    this.loadDataset(this.customerApi.getCustomers(), this.customers);
+  protected loadCustomers(explicitRefresh = false): void {
+    this.loadDataset(
+      this.customerApi.getCustomers({
+        successMessage: explicitRefresh ? 'Customer data refreshed.' : undefined,
+        suppressErrorNotification: true,
+      }),
+      this.customers,
+    );
   }
 
-  protected loadProducts(): void {
-    this.loadDataset(this.productApi.getProducts(), this.products);
+  protected loadProducts(explicitRefresh = false): void {
+    this.loadDataset(
+      this.productApi.getProducts({
+        successMessage: explicitRefresh ? 'Product data refreshed.' : undefined,
+        suppressErrorNotification: true,
+      }),
+      this.products,
+    );
   }
 
   protected count<T>(state: DatasetState<T>): string {

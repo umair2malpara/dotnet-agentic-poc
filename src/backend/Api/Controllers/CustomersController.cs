@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using DotnetAgenticPoc.Api.Contracts;
 using DotnetAgenticPoc.Api.Contracts.Customers;
 using DotnetAgenticPoc.Application.Services;
 using DotnetAgenticPoc.Domain.Models;
@@ -16,34 +17,37 @@ public sealed class CustomersController(
         RegexOptions.CultureInvariant);
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyCollection<Customer>>> GetAll(
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<Customer>>>> GetAll(
         CancellationToken cancellationToken)
     {
         var customers = await customerService.GetAllAsync(cancellationToken);
-        return Ok(customers);
+        return Ok(ApiResponse<IReadOnlyCollection<Customer>>.Success(customers));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Customer>> GetById(
+    public async Task<ActionResult<ApiResponse<Customer>>> GetById(
         Guid id,
         CancellationToken cancellationToken)
     {
         var customer = await customerService.GetByIdAsync(id, cancellationToken);
 
         return customer is null
-            ? NotFound()
-            : Ok(customer);
+            ? Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Customer not found",
+                detail: "The requested customer was not found.")
+            : Ok(ApiResponse<Customer>.Success(customer));
     }
 
     [HttpPost]
-    public async Task<ActionResult<Customer>> Create(
+    public async Task<ActionResult<ApiResponse<Customer>>> Create(
         Customer customer,
         CancellationToken cancellationToken)
     {
         if (!TryNormalizeCustomer(customer, out var validationError))
         {
             ModelState.AddModelError(validationError.Key, validationError.Value);
-            return CreateValidationProblem();
+            return ApiProblemDetailsFactory.CreateValidationProblem(ModelState);
         }
 
         var createdCustomer =
@@ -52,7 +56,7 @@ public sealed class CustomersController(
         return CreatedAtAction(
             nameof(GetById),
             new { id = createdCustomer.Id },
-            createdCustomer);
+            ApiResponse<Customer>.Success(createdCustomer));
     }
 
     [HttpPut("{id:guid}")]
@@ -64,7 +68,7 @@ public sealed class CustomersController(
         if (!TryNormalizeCustomer(customer, out var validationError))
         {
             ModelState.AddModelError(validationError.Key, validationError.Value);
-            return CreateValidationProblem();
+            return ApiProblemDetailsFactory.CreateValidationProblem(ModelState);
         }
 
         customer.Id = id;
@@ -73,7 +77,12 @@ public sealed class CustomersController(
             customer,
             cancellationToken);
 
-        return updated ? NoContent() : NotFound();
+        return updated
+            ? Ok(ApiResponse<object?>.Success(null))
+            : Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Customer not found",
+                detail: "The requested customer was not found.");
     }
 
     [HttpPost("bulk-delete")]
@@ -86,7 +95,7 @@ public sealed class CustomersController(
             ModelState.AddModelError(
                 nameof(request.Ids),
                 "At least one customer ID is required.");
-            return CreateValidationProblem();
+            return ApiProblemDetailsFactory.CreateValidationProblem(ModelState);
         }
 
         var deleted = await customerService.DeleteManyAsync(
@@ -94,7 +103,7 @@ public sealed class CustomersController(
             cancellationToken);
 
         return deleted
-            ? NoContent()
+            ? Ok(ApiResponse<object?>.Success(null))
             : Problem(
                 statusCode: StatusCodes.Status404NotFound,
                 title: "Customer not found",
@@ -110,7 +119,12 @@ public sealed class CustomersController(
             id,
             cancellationToken);
 
-        return deleted ? NoContent() : NotFound();
+        return deleted
+            ? Ok(ApiResponse<object?>.Success(null))
+            : Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Customer not found",
+                detail: "The requested customer was not found.");
     }
 
     private static bool TryNormalizeCustomer(
@@ -138,17 +152,5 @@ public sealed class CustomersController(
 
         validationError = default;
         return true;
-    }
-
-    private ObjectResult CreateValidationProblem()
-    {
-        var problem = new ValidationProblemDetails(ModelState)
-        {
-            Status = StatusCodes.Status400BadRequest
-        };
-        return new ObjectResult(problem)
-        {
-            StatusCode = StatusCodes.Status400BadRequest
-        };
     }
 }
